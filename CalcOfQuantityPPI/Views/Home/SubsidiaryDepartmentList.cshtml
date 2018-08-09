@@ -1,0 +1,7 @@
+﻿@model IEnumerable<CalcOfQuantityPPI.Models.Department>
+<select id="subsidiaryDepartment" class="form-control">
+    @foreach (var item in Model)
+    {
+        <option value="@item.Id">@item.Name</option>
+    }
+</select>

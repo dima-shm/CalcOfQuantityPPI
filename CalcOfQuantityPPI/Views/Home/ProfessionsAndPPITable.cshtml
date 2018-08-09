@@ -1,0 +1,34 @@
+﻿@model CalcOfQuantityPPI.ViewModels.ProfessionsTableModel
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="200">Профессия</th>
+            <th>Наименование СИЗ и количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var profession in Model.Professions)
+        {
+            <tr>
+                <td>@profession.Name</td>
+                <td>
+                    <table class="table table-striped">
+                        <tbody>
+                            @foreach (var ppi in Model.PPIForProfession.Where(p => p.ProfessionId == profession.Id))
+                            {
+                                <tr>
+                                    <td>
+                                        @Model.PPI.FirstOrDefault(p => p.Id == @ppi.PPIId).Name
+                                    </td>
+                                    <td width="80">
+                                        <input type="text" class="form-control" />
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
