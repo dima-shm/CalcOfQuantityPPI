@@ -14,8 +14,6 @@ namespace CalcOfQuantityPPI.Controllers
         [HttpGet]
         public ActionResult CreateRequest()
         {
-            SelectList teams = new SelectList(_context.Departments.Where(p => p.ParentDepartment == null), "Id", "Name");
-            ViewBag.Teams = teams;
             RequestViewModel model = new RequestViewModel
             {
                 Departments = _context.Departments.Where(p => p.ParentDepartment == null)
@@ -79,10 +77,10 @@ namespace CalcOfQuantityPPI.Controllers
             List<ProfessionsInDepartment> professionsInDepartment = _context.ProfessionsInDepartment.Where(c => c.DepartmentId == id).ToList();
             List<Profession> professions = new List<Profession>();
             List<int?> professionsId = new List<int?>();
-            for (int i = 0; i < professionsInDepartment.Count; i++)
+            foreach (ProfessionsInDepartment profession in professionsInDepartment)
             {
-                professionsId.Add(professionsInDepartment[i].ProfessionId);
-                professions.Add(_context.Professions.Find(professionsInDepartment[i].ProfessionId));
+                professionsId.Add(profession.ProfessionId);
+                professions.Add(_context.Professions.Find(profession.ProfessionId));
             }
             return professions;
         }
@@ -96,11 +94,11 @@ namespace CalcOfQuantityPPI.Controllers
         {
             List<PPIForProfession> ppiForProfession = _context.PPIForProfession.Where(c => c.ProfessionId == id).ToList();
             List<PersonalProtectiveItem> ppi = new List<PersonalProtectiveItem>();
-            List<int?> professionsId2 = new List<int?>();
-            for (int i = 0; i < ppiForProfession.Count; i++)
+            List<int?> professionsId = new List<int?>();
+            foreach (PPIForProfession p in ppiForProfession)
             {
-                professionsId2.Add(ppiForProfession[i].PPIId);
-                ppi.Add(_context.PersonalProtectiveItems.Find(ppiForProfession[i].ProfessionId));
+                professionsId.Add(p.PPIId);
+                ppi.Add(_context.PersonalProtectiveItems.Find(p.ProfessionId));
             }
             return ppi;
         }

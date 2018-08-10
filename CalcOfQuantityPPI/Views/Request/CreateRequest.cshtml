@@ -19,7 +19,7 @@
             <div class="col-md-4">
                 @Html.Label("Выберите подразделение:")
                 <br />
-                @Html.DropDownList("parentDepartment", ViewBag.Teams as SelectList, new { id = "parentDepartment", @class = "form-control" })
+                @Html.DropDownList("parentDepartment", new SelectList(Model.Departments.Where(p => p.ParentDepartment == null), "Id", "Name"), new { id = "parentDepartment", @class = "form-control" })
                 <br />
                 @Html.CheckBox("isUseSubsidiaryDepartment", new { id = "isUseSubsidiaryDepartment" })
                 @Html.Label("Дочернее подразделение")
