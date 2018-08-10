@@ -1,0 +1,39 @@
+﻿@model CalcOfQuantityPPI.ViewModels.Request.RequestViewModel
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th width="200">Профессия</th>
+            <th>Наименование СИЗ</th>
+            <th width="80">Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var profession in Model.ProfessionsTableViewModel.Professions)
+        {
+            <tr>
+                <td>
+                    @Html.HiddenFor(model => Model.ProfessionId, new { @Value = profession.Id })
+                    @profession.Name
+                </td>
+                <td colspan="2">
+                    <table class="table table-striped">
+                        <tbody>
+                            @foreach (var ppi in Model.ProfessionsTableViewModel.PPIForProfession.Where(p => p.ProfessionId == profession.Id))
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.HiddenFor(model => Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Name)
+                                        @Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Name
+                                    </td>
+                                    <td width="100">
+                                        @Html.EditorFor(model => model.QuantityOfPPI, new { htmlAttributes = new { min = "0", max = "1000", @class = "form-control" } })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
