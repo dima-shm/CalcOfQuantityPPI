@@ -12,7 +12,7 @@
         {
             <tr>
                 <td>
-                    @Html.HiddenFor(model => Model.ProfessionId, new { @Value = profession.Id })
+                    @Html.HiddenFor(model => model.ProfessionsTableViewModel.ProfessionId, new { @Value = profession.Id })
                     @profession.Name
                 </td>
                 <td colspan="2">
@@ -22,11 +22,11 @@
                             {
                                 <tr>
                                     <td>
-                                        @Html.HiddenFor(model => Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Name)
+                                        @Html.HiddenFor(model => model.ProfessionsTableViewModel.PPIIdForProfession, new { @Value = Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Id })
                                         @Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Name
                                     </td>
                                     <td width="100">
-                                        @Html.EditorFor(model => model.QuantityOfPPI, new { htmlAttributes = new { min = "0", max = "1000", @class = "form-control" } })
+                                        @Html.TextBoxFor(model => Model.ProfessionsTableViewModel.QuantityOfPPI, new { type ="number", min = "0", max = "1000", @class = "form-control" })
                                     </td>
                                 </tr>
                             }

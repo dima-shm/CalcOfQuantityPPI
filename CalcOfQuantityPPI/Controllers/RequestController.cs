@@ -1,6 +1,7 @@
 ﻿using CalcOfQuantityPPI.Data;
 using CalcOfQuantityPPI.Models;
 using CalcOfQuantityPPI.ViewModels.Request;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -22,21 +23,28 @@ namespace CalcOfQuantityPPI.Controllers
         }
 
         [HttpPost]
-        public string CreateRequest(string parentDepartment, bool isUseSubsidiaryDepartment, string subsidiaryDepartment,
-            ICollection<int> ProfessionId, ICollection<string> Name, ICollection<string> QuantityOfPPI)
+        public string CreateRequest(RequestViewModel model, bool isUseSubsidiaryDepartment)
         {
-            string s = "<b>Подразделение:</b> " + parentDepartment + "<br />";
+            string s = "<b>Подразделение:</b> " + _context.Departments.Find(model.ParentDepartment).Name + "<br /><br />";
             if (isUseSubsidiaryDepartment)
             {
-                s += "<b>Дочернее подразделение:</b> " + subsidiaryDepartment + "<br />";
+                s += "<b>Дочернее подразделение:</b> " + _context.Departments.Find(model.SubsidiaryDepartment).Name + "<br /><br />";
             }
-            if (Name != null && QuantityOfPPI != null && ProfessionId != null)
+            for (int k = 0; k < model.ProfessionsTableViewModel.ProfessionId.Count(); k++)
             {
-                for (int i = 0; i < Name.Count; i++)
+                int? professionId = model.ProfessionsTableViewModel.ProfessionId.ElementAt(k);
+                s += "<b>Профессия: " + _context.Professions.Find(professionId).Name + "</b><br />";
+                try
                 {
-                    s += "  <b>" + ProfessionId.ElementAt(i) + "</b><br />";
-                    s += Name.ElementAt(i) + " " + QuantityOfPPI.ElementAt(i) + " " + "<br />";
+                    List<int?> ppiIdList = _context.PPIForProfession.Where(p => p.ProfessionId == professionId).Select(p => p.PPIId).ToList();
+                    for (int i = 0; i < ppiIdList.Count(); i++)
+                    {
+                        s += "<i>" + _context.PersonalProtectiveItems.Find(ppiIdList.ElementAt(i)).Name + "</i>: ";
+                        s += "<b>" + model.ProfessionsTableViewModel.QuantityOfPPI.ElementAt(k + i) + "</b><br />";
+                    };
                 }
+                catch (Exception ex) { s += "   Exception" + ex.Message + "<br />"; }
+                s += "<br />";
             }
             return s;
         }

@@ -7,7 +7,8 @@ namespace CalcOfQuantityPPI.ViewModels.Request
     {
         public IEnumerable<Department> Departments { get; set; }
         public ProfessionsTableViewModel ProfessionsTableViewModel { get; set; }
-        public int ProfessionId { get; set; }
-        public int QuantityOfPPI { get; set; }
+
+        public int ParentDepartment { get; set; }
+        public int SubsidiaryDepartment { get; set; }
     }
 }

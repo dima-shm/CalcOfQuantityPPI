@@ -19,12 +19,12 @@
             <div class="col-md-4">
                 @Html.Label("Выберите подразделение:")
                 <br />
-                @Html.DropDownList("parentDepartment", new SelectList(Model.Departments.Where(p => p.ParentDepartment == null), "Id", "Name"), new { id = "parentDepartment", @class = "form-control" })
+                @Html.DropDownList("ParentDepartment", new SelectList(Model.Departments.Where(p => p.ParentDepartment == null), "Id", "Name"), new { id = "parentDepartment", @class = "form-control" })
                 <br />
                 @Html.CheckBox("isUseSubsidiaryDepartment", new { id = "isUseSubsidiaryDepartment" })
                 @Html.Label("Дочернее подразделение")
                 <br />
-                @Html.DropDownList("subsidiaryDepartment", new SelectList(new[] { "" }), new { @class = "form-control", style = "display:none" })
+                @Html.DropDownList("SubsidiaryDepartment", new SelectList(new[] { "" }), new { id = "subsidiaryDepartment", @class = "form-control", style = "display:none" })
                 <br />
                 <button type="submit" class="btn btn-primary">Отправить заявку</button>
             </div>
