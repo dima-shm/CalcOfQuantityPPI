@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalcOfQuantityPPI.Models
 {
@@ -8,6 +9,9 @@ namespace CalcOfQuantityPPI.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public string Head { get; set; }
-        public Department ParentDepartment { get; set; }
+
+        public int? ParentDepartmentId { get; set; }
+        [ForeignKey("ParentDepartmentId")]
+        private Department ParentDepartment { get; set; }
     }
 }

@@ -36,28 +36,28 @@
     <script type="text/javascript">
         $(function () {
             updateSubsidiaryDepartmentList();
-            updateProfessionsAndPPITable();
+            updateProfessionsAndPPITable('#parentDepartment');
         });
         $('#parentDepartment').change(function () {
             updateSubsidiaryDepartmentList();
-            updateProfessionsAndPPITable();
+            updateProfessionsAndPPITable('#parentDepartment');
         });
-        $('#subsidiaryDepartment').change(function () {
-            updateProfessionsAndPPITable();
+        $('#subsidiaryDepartment').change(function() {
+            updateProfessionsAndPPITable('#subsidiaryDepartment');
         });
         function updateSubsidiaryDepartmentList() {
             var parentDepartmentId = $('#parentDepartment').val();
             $.ajax({
                 success: function () {
-                    $('#subsidiaryDepartment').load('@Url.Action("SubsidiaryDepartmentList", "Request")/?departmentId=' + parentDepartmentId);
+                    $('#subsidiaryDepartment').load('@Url.Action("SubsidiaryDepartmentList", "Request")/' + parentDepartmentId);
                 }
             });
         }
-        function updateProfessionsAndPPITable() {
-            var subsidiaryDepartmentId = $('#subsidiaryDepartment').val();
+        function updateProfessionsAndPPITable(id) {
+            var subsidiaryDepartmentId = $(id).val();
             $.ajax({
                 success: function () {
-                    $('#professionsTabel').load('@Url.Action("ProfessionsAndPPITable", "Request")/?departmentId=' + subsidiaryDepartmentId);
+                    $('#professionsTabel').load('@Url.Action("ProfessionsAndPPITable", "Request")/' + subsidiaryDepartmentId);
                 }
             });
         }
