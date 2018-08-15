@@ -162,7 +162,6 @@
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\PersonalProtectiveItem.cs" />
     <Compile Include="Models\PPIForProfession.cs" />
-    <Compile Include="Models\PPIInRequest.cs" />
     <Compile Include="Models\Profession.cs" />
     <Compile Include="Models\ProfessionsInDepartment.cs" />
     <Compile Include="Models\Request.cs" />

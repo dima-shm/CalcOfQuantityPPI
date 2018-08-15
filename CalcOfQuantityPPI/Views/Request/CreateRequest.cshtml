@@ -18,10 +18,10 @@
         <form asp-action="CreateRequest" asp-controller="Request" method="post">
             <div class="col-md-4">
                 @Html.Label("Структурное подразделение:")<br />
-                @Html.DropDownList("parentDepartment", ViewBag.ParentDepartment as SelectList, new { @class = "form-control" })
+                @Html.DropDownList("parentDepartment", ViewBag.ParentDepartmentList as SelectList, new { @class = "form-control" })
                 <br />
                 @Html.Label("Подразделение")<br />
-                @Html.DropDownList("subsidiaryDepartment", ViewBag.SubsidiaryDepartment as SelectList, new { @class = "form-control" })
+                @Html.DropDownListFor(model => model.DepartmentId, ViewBag.SubsidiaryDepartmentList as SelectList, new { id = "subsidiaryDepartment", @class = "form-control" })
                 <br />
                 <button type="submit" class="btn btn-primary">Отправить заявку</button>
             </div>

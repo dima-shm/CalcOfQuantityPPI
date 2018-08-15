@@ -15,33 +15,37 @@ namespace CalcOfQuantityPPI.Controllers
         [HttpGet]
         public ActionResult CreateRequest()
         {
-            SelectList parentDepartments = 
+            SelectList parentDepartments =
                 new SelectList(_context.Departments.Where(p => p.ParentDepartmentId == null), "Id", "Name");
-            ViewBag.ParentDepartment = parentDepartments;
-            SelectList subsidiaryDepartments = 
+            ViewBag.ParentDepartmentList = parentDepartments;
+            SelectList subsidiaryDepartments =
                 new SelectList(_context.Departments.Where(c => c.ParentDepartmentId == _context.Departments.FirstOrDefault(p => p.ParentDepartmentId == null).Id), "Id", "Name");
-            ViewBag.SubsidiaryDepartment = subsidiaryDepartments;
+            ViewBag.SubsidiaryDepartmentList = subsidiaryDepartments;
             return View(new RequestViewModel());
         }
 
         [HttpPost]
         public string CreateRequest(RequestViewModel model)
         {
-            string s = "<b>Подразделение:</b> " + _context.Departments.Find(model.ParentDepartment).Name + "<br />" +
-                "<b>Дочернее подразделение:</b> " + _context.Departments.Find(model.SubsidiaryDepartment).Name + "<br /><br />";
+            Department department = _context.Departments.Find(model.DepartmentId);
+            string s = "<b>Подразделение:</b> " + _context.Departments.FirstOrDefault(d => d.Id == department.ParentDepartmentId).Name + "<br />"
+                + "<b>Дочернее подразделение:</b> " + _context.Departments.Find(model.DepartmentId).Name + "<br /><br />";
             for (int k = 0; k < model.ProfessionsTableViewModel.ProfessionId.Count(); k++)
             {
                 //int? professionId = model.ProfessionsTableViewModel.Professions.Select(p => p.Id).ElementAt(k);
                 int? professionId = model.ProfessionsTableViewModel.ProfessionId.ElementAt(k);
+                s += professionId.Value;
                 s += "<b>Профессия: " + _context.Professions.Find(professionId).Name + "</b> " +
                     "<i>(Численность: " + model.ProfessionsTableViewModel.QuantityOfEmployees.ElementAt(k) + ")</i><br />";
                 try
                 {
                     List<int?> ppiIdList = _context.PPIForProfession.Where(p => p.ProfessionId == professionId).Select(p => p.PPIId).ToList();
+                    List<int?> ppiIdList2 = _context.PPIForProfession/*.Where(p => p.ProfessionId == professionId)*/.Select(p => p.PPIId).ToList();
                     for (int i = 0; i < ppiIdList.Count(); i++)
                     {
+                        s += ppiIdList.ElementAt(i);
                         s += "<i>" + _context.PersonalProtectiveItems.Find(ppiIdList.ElementAt(i)).Name + "</i>: ";
-                        s += "<b>" + model.ProfessionsTableViewModel.QuantityOfPPIForOneEmployee.ElementAt(k + i) + "</b>";
+                        s += "<b>" + model.ProfessionsTableViewModel.QuantityOfPPIForOneEmployee.ElementAt(professionId.Value) + "</b>";
                         s += " Всего: <i>" + model.ProfessionsTableViewModel.TotalQuantityOfPPI.ElementAt(k + i) + "</i><br />";
                     };
                 }
@@ -63,7 +67,7 @@ namespace CalcOfQuantityPPI.Controllers
         public PartialViewResult ProfessionsAndPPITable(int id)
         {
             RequestViewModel model = new RequestViewModel
-            {
+            { 
                 ProfessionsTableViewModel = new ProfessionsTableViewModel
                 {
                     Professions = GetProfessionsByDepartmentId(id),
@@ -90,7 +94,7 @@ namespace CalcOfQuantityPPI.Controllers
             else
             {
                 professions = GetProfessionsById(id);
-            }           
+            }
             return professions;
         }
 
