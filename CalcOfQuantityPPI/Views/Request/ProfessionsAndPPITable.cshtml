@@ -1,5 +1,6 @@
 ﻿@model CalcOfQuantityPPI.ViewModels.Request.RequestViewModel
-<table class="table table-striped">
+
+<table class="table table-hover">
     <thead>
         <tr>
             <th width="200">Профессия</th>
@@ -10,39 +11,37 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var profession in Model.ProfessionsTableViewModel.Professions)
+        @for (int i = 0; i < Model.ProfessionViewModelList.Count; i++)
         {
             <tr>
-                <td>
-                    @Html.HiddenFor(model => model.ProfessionsTableViewModel.ProfessionId, 
-                        new { @Value = profession.Id })
-                    @profession.Name
+                <td width="200">
+                    @Html.HiddenFor(model => Model.ProfessionViewModelList[i].ProfessionName)
+                    @Model.ProfessionViewModelList[i].ProfessionName
                 </td>
-                <td width="100">
-                    @Html.TextBoxFor(model => Model.ProfessionsTableViewModel.QuantityOfEmployees,
-                        new { id = "quantityOfEmployees", type = "number", min = "0", max = "1000", @class = "form-control" })
+                <td>
+                    @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "", 
+                        new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control" })
                 </td>
                 <td colspan="3">
-                    <table class="table table-striped calc-table">
+                    <table class="table table-hover calc-table">
                         <tbody>
-                            @foreach (var ppi in Model.ProfessionsTableViewModel.PPIForProfession.Where(p => p.ProfessionId == profession.Id))
+                            @for (int j = 0; j < Model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
                             {
                                 <tr>
                                     <td>
                                         @Html.Hidden("quantityOfEmployeesHidden", "", new { @class = "quantity-of-employees" })
                                     </td>
-                                    <td>
-                                        @Html.HiddenFor(model => model.ProfessionsTableViewModel.PPIIdForProfession,
-                                            new { @Value = Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Id })
-                                        @Model.ProfessionsTableViewModel.PPI.FirstOrDefault(p => p.Id == ppi.PPIId).Name
+                                    <td width="100">
+                                        @Html.HiddenFor(model => Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName)
+                                        @Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName
                                     </td>
                                     <td width="100">
-                                        @Html.TextBoxFor(model => Model.ProfessionsTableViewModel.QuantityOfPPIForOneEmployee,
+                                        @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null, 
                                             new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee" })
                                     </td>
                                     <td width="100">
-                                        @Html.TextBoxFor(model => Model.ProfessionsTableViewModel.TotalQuantityOfPPI,
-                                            new { type = "text", @readonly= "readonly", @class = "form-control total-quantity-of-ppi" })
+                                        @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", null,
+                                            new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi" })
                                     </td>
                                 </tr>
                             }
@@ -60,7 +59,7 @@
     });
     $('input').bind('input', function () {
         $(this).closest('tr').find('input').each(function (i) {
-            var numberInProfession = $(this).closest('tr').find('input[id=quantityOfEmployees]').val();
+            var numberInProfession = $(this).closest('tr').find('input[id=employeesQuantity]').val();
             if (isNaN(numberInProfession) || numberInProfession === undefined) {
                 return;
             }

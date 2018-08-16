@@ -1,7 +1,6 @@
 ﻿using CalcOfQuantityPPI.Data;
 using CalcOfQuantityPPI.Models;
 using CalcOfQuantityPPI.ViewModels.Request;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -30,27 +29,16 @@ namespace CalcOfQuantityPPI.Controllers
             Department department = _context.Departments.Find(model.DepartmentId);
             string s = "<b>Подразделение:</b> " + _context.Departments.FirstOrDefault(d => d.Id == department.ParentDepartmentId).Name + "<br />"
                 + "<b>Дочернее подразделение:</b> " + _context.Departments.Find(model.DepartmentId).Name + "<br /><br />";
-            for (int k = 0; k < model.ProfessionsTableViewModel.ProfessionId.Count(); k++)
+            for (int i = 0; i < model.ProfessionViewModelList.Count; i++)
             {
-                //int? professionId = model.ProfessionsTableViewModel.Professions.Select(p => p.Id).ElementAt(k);
-                int? professionId = model.ProfessionsTableViewModel.ProfessionId.ElementAt(k);
-                s += professionId.Value;
-                s += "<b>Профессия: " + _context.Professions.Find(professionId).Name + "</b> " +
-                    "<i>(Численность: " + model.ProfessionsTableViewModel.QuantityOfEmployees.ElementAt(k) + ")</i><br />";
-                try
+                s += "<b>" + model.ProfessionViewModelList[i].ProfessionName + "</b>"
+                    + "<i>(Численность: " + model.ProfessionViewModelList[i].EmployeesQuantity + ")</i><br />";
+                for (int j = 0; j < model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
                 {
-                    List<int?> ppiIdList = _context.PPIForProfession.Where(p => p.ProfessionId == professionId).Select(p => p.PPIId).ToList();
-                    List<int?> ppiIdList2 = _context.PPIForProfession/*.Where(p => p.ProfessionId == professionId)*/.Select(p => p.PPIId).ToList();
-                    for (int i = 0; i < ppiIdList.Count(); i++)
-                    {
-                        s += ppiIdList.ElementAt(i);
-                        s += "<i>" + _context.PersonalProtectiveItems.Find(ppiIdList.ElementAt(i)).Name + "</i>: ";
-                        s += "<b>" + model.ProfessionsTableViewModel.QuantityOfPPIForOneEmployee.ElementAt(professionId.Value) + "</b>";
-                        s += " Всего: <i>" + model.ProfessionsTableViewModel.TotalQuantityOfPPI.ElementAt(k + i) + "</i><br />";
-                    };
+                    s += "<i>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName + "</i> - "
+                        + "<b>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee + "</b> - "
+                        + "Всего:" + (model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity) + "<br />";
                 }
-                catch (Exception ex) { s += "Exception" + ex.Message + "<br />"; }
-                s += "<br />";
             }
             return s;
         }
@@ -67,13 +55,8 @@ namespace CalcOfQuantityPPI.Controllers
         public PartialViewResult ProfessionsAndPPITable(int id)
         {
             RequestViewModel model = new RequestViewModel
-            { 
-                ProfessionsTableViewModel = new ProfessionsTableViewModel
-                {
-                    Professions = GetProfessionsByDepartmentId(id),
-                    PPIForProfession = GetPPIForProfession(),
-                    PPI = GetPersonalProtectiveItems()
-                }
+            {
+                ProfessionViewModelList = GetProfessionViewModelListByDepartmentId(id)
             };
             return PartialView(model);
         }
@@ -105,12 +88,12 @@ namespace CalcOfQuantityPPI.Controllers
 
         private List<Profession> GetProfessionsById(int? id)
         {
-            List<Profession> professions = new List<Profession>();
+            List<Profession> professionList = new List<Profession>();
             foreach (ProfessionsInDepartment profession in _context.ProfessionsInDepartment.Where(c => c.DepartmentId == id).ToList())
             {
-                professions.Add(_context.Professions.Find(profession.ProfessionId));
+                professionList.Add(_context.Professions.Find(profession.ProfessionId));
             }
-            return professions;
+            return professionList;
         }
 
         private int? GetFirstSubsidiaryDepartamentIdByParentDepartmentId(int id)
@@ -118,14 +101,45 @@ namespace CalcOfQuantityPPI.Controllers
             return _context.Departments.FirstOrDefault(d => d.ParentDepartmentId == id).Id;
         }
 
-        private List<PPIForProfession> GetPPIForProfession()
+        private List<ProfessionViewModel> GetProfessionViewModelListByDepartmentId(int id)
         {
-            return _context.PPIForProfession.ToList();
+            List<ProfessionViewModel> professionViewModelList = new List<ProfessionViewModel>();
+            List<Profession> professions = GetProfessionsByDepartmentId(id);
+            List<PersonalProtectiveItem> ppiList;
+            foreach (Profession p in professions)
+            {
+                ppiList = GetPPIByProfessionId(p.Id);
+                professionViewModelList.Add(new ProfessionViewModel
+                {
+                    ProfessionName = _context.Professions.Find(p.Id).Name,
+                    EmployeesQuantity = 0,
+                    QuantityOfPPI = GetQuantityOfPPIViewModel(ppiList)
+                });
+            }
+            return professionViewModelList;
         }
 
-        private List<PersonalProtectiveItem> GetPersonalProtectiveItems()
+        private List<PersonalProtectiveItem> GetPPIByProfessionId(int id)
         {
-            return _context.PersonalProtectiveItems.ToList();
+            List<PersonalProtectiveItem> ppiList = new List<PersonalProtectiveItem>();
+            foreach (PPIForProfession ppi in _context.PPIForProfession.Where(p => p.ProfessionId == id).ToList())
+            {
+                ppiList.Add(_context.PersonalProtectiveItems.Find(ppi.PPIId));
+            }
+            return ppiList;
+        }
+
+        private QuantityOfPPIViewModel[] GetQuantityOfPPIViewModel(List<PersonalProtectiveItem> ppiList)
+        {
+            List<QuantityOfPPIViewModel> QuantityOfPPI = new List<QuantityOfPPIViewModel>();
+            foreach (PersonalProtectiveItem ppi in ppiList)
+            {
+                QuantityOfPPI.Add(new QuantityOfPPIViewModel
+                {
+                    PersonalProtectiveItemName = ppi.Name
+                });
+            }
+            return QuantityOfPPI.ToArray();
         }
 
         #endregion
