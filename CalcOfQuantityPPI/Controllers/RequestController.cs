@@ -31,13 +31,19 @@ namespace CalcOfQuantityPPI.Controllers
                 + "<b>Дочернее подразделение:</b> " + _context.Departments.Find(model.DepartmentId).Name + "<br /><br />";
             for (int i = 0; i < model.ProfessionViewModelList.Count; i++)
             {
-                s += "<b>" + model.ProfessionViewModelList[i].ProfessionName + "</b>"
-                    + "<i>(Численность: " + model.ProfessionViewModelList[i].EmployeesQuantity + ")</i><br />";
-                for (int j = 0; j < model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
+                if (model.ProfessionViewModelList[i].EmployeesQuantity != 0)
                 {
-                    s += "<i>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName + "</i> - "
-                        + "<b>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee + "</b> - "
-                        + "Всего:" + (model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity) + "<br />";
+                    s += "<b>" + model.ProfessionViewModelList[i].ProfessionName + "</b>"
+                    + "<i>(Численность: " + model.ProfessionViewModelList[i].EmployeesQuantity + ")</i><br />";
+                    for (int j = 0; j < model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
+                    {
+                        if (model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee != 0)
+                        {
+                            s += "<i>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName + "</i> - "
+                                + "<b>" + model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee + "</b> - "
+                                + "Всего:" + (model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity) + "<br />";
+                        }
+                    }
                 }
             }
             return s;
