@@ -41,6 +41,34 @@ namespace CalcOfQuantityPPI.Data
             return professionViewModelList;
         }
 
+        public Profession GetProfessionByName(string professionName)
+        {
+            return _context.Professions.First(p => p.Name == professionName);
+        }
+
+        public PersonalProtectiveItem GetPPIByName(string ppiName)
+        {
+            return _context.PersonalProtectiveItems.First(p => p.Name == ppiName);
+        }
+
+        public void AddRequest(Request request)
+        {
+            _context.Requests.Add(request);
+            _context.SaveChanges();
+        }
+
+        public void AddProfessionsInRequest(ProfessionsInRequest professionsInRequest)
+        {
+            _context.ProfessionsInRequest.Add(professionsInRequest);
+            _context.SaveChanges();
+        }
+
+        public void AddPPIInRequest(PPIInRequest ppiInRequest)
+        {
+            _context.PPIInRequest.Add(ppiInRequest);
+            _context.SaveChanges();
+        }
+
         private List<Profession> GetProfessionsByDepartmentId(int? departmentId)
         {
             List<Profession> professions = new List<Profession>();

@@ -213,6 +213,7 @@
     <Content Include="Views\Request\SubsidiaryDepartmentList.cshtml" />
     <Content Include="Views\Request\ProfessionsAndPPITable.cshtml" />
     <Content Include="Views\Request\CreateRequest.cshtml" />
+    <Content Include="Views\Request\RequestResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
