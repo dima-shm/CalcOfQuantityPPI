@@ -155,6 +155,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RequestController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Data\ApplicationContext.cs" />
     <Compile Include="Data\DatabaseHelper.cs" />
     <Compile Include="Global.asax.cs">
@@ -215,6 +216,8 @@
     <Content Include="Views\Request\CreateRequest.cshtml" />
     <Content Include="Views\Request\RequestFailed.cshtml" />
     <Content Include="Views\Request\RequestSuccess.cshtml" />
+    <Content Include="Views\Search\SearchByDepartmentName.cshtml" />
+    <Content Include="Views\Search\SearchByPPIName.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

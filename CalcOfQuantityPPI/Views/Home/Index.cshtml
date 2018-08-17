@@ -1,21 +1,70 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Главная";
 }
 
 <div class="container"
      style="padding: 0 20px 20px 20px;
      background-color: rgb(255,255,255);
      box-shadow: rgba(0,0,0,0.5) 0 5px 20px;
-     border-radius:5px;">
+     border-radius:5px;
+     min-height:800px">
     <div class="row" style="background-color:rgb(0, 140, 208); margin-left:-20px; margin-right:-20px; padding:10px;">
         <div class="col-md-12">
-            <h2 style="color:white;">Выберите действие</h2>
+            <h2 style="color:white;">Учет потребности СИЗ</h2>
         </div>
     </div>
     <br />
     <div class="row">
-        <div class="col-md-4">
-            @Html.ActionLink("Оформить заявку", "CreateRequest", "Request", null, new { @class = "btn btn-primary" })
+        <div class="col-md-6">
+            <div class="col-md-2"></div>
+            <div class="row">
+                <div class="col-md-8">
+                    <form asp-action="Register" asp-controller="Account" method="post">
+                        <fieldset>
+                            <legend>Вход</legend>
+                            <center>
+                                <div asp-validation-summary="ModelOnly"></div>
+                                <div>
+                                    <div class="form-group">
+                                        <input asp-for="Login" class="form-control" placeholder="Логин" />
+                                        <span asp-validation-for="Login"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="form-group">
+                                        <input asp-for="Password" class="form-control" placeholder="Пароль" />
+                                        <span asp-validation-for="Password"></span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <input type="submit" value="Вход" class="btn btn-success btn-block" />
+                                </div>
+                            </center>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-4"></div>
+            <div class="row">
+                <div class="col-md-8">
+                    <fieldset>
+                        <legend>Выберите действие</legend>
+                        <center>
+                            @Html.ActionLink("Оформить заявку", "CreateRequest", "Request", null,
+                                new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                            <br />
+                            @Html.ActionLink("Поиск по наименованию СИЗ", "SearchByPPIName", "Search", null,
+                                new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                            <br />
+                            @Html.ActionLink("Поиск по наименованию подразделения", "SearchByDepartmentName", "Search", null,
+                                new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                        </center>
+                    </fieldset>
+                </div>
+            </div>
+            <br />
         </div>
     </div>
 </div>

@@ -4,10 +4,10 @@
     <thead>
         <tr>
             <th width="180">Профессия</th>
-            <th width="60">Численность сотрудников</th>
+            <th width="70">Численность сотрудников</th>
             <th width="300">Наименование средств индивидуальной защиты</th>
-            <th width="60">Количество на одного сотрудника</th>
-            <th width="100">Всего</th>
+            <th width="70">Количество на одного сотрудника</th>
+            <th width="90">Всего</th>
         </tr>
     </thead>
     <tbody>
@@ -21,7 +21,7 @@
                 <td>
                     <center>
                         @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "",
-                            new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control", style = "width:60px" })
+                            new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control", style = "width:70px" })
                     </center>
                 </td>
                 <td colspan="3">
@@ -39,11 +39,11 @@
                                     </td>
                                     <td>
                                         @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null,
-                                            new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee", style = "width:60px" })
+                                            new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee", style = "width:70px" })
                                     </td>
                                     <td>
                                         @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", null,
-                                            new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi", style = "width:80px" })
+                                            new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi", style = "width:90px" })
                                     </td>
                                 </tr>
                             }
