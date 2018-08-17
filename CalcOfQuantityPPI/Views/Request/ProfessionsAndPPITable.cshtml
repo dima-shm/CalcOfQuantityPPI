@@ -3,24 +3,26 @@
 <table class="table table-hover">
     <thead>
         <tr>
-            <th width="200">Профессия</th>
-            <th width="100">Численность</th>
-            <th width="100">Наименование СИЗ</th>
-            <th width="100">Количество на одного работника</th>
-            <th width="100">Количество всего</th>
+            <th width="180">Профессия</th>
+            <th width="60">Численность сотрудников</th>
+            <th width="300">Наименование средств индивидуальной защиты</th>
+            <th width="60">Количество на одного сотрудника</th>
+            <th width="100">Всего</th>
         </tr>
     </thead>
     <tbody>
         @for (int i = 0; i < Model.ProfessionViewModelList.Count; i++)
         {
             <tr>
-                <td width="200">
+                <td width="180">
                     @Html.HiddenFor(model => Model.ProfessionViewModelList[i].ProfessionName)
                     @Model.ProfessionViewModelList[i].ProfessionName
                 </td>
                 <td>
-                    @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "", 
-                        new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control" })
+                    <center>
+                        @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "",
+                            new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control", style = "width:60px" })
+                    </center>
                 </td>
                 <td colspan="3">
                     <table class="table table-hover calc-table">
@@ -31,17 +33,17 @@
                                     <td>
                                         @Html.Hidden("quantityOfEmployeesHidden", "", new { @class = "quantity-of-employees" })
                                     </td>
-                                    <td width="100">
+                                    <td width="300">
                                         @Html.HiddenFor(model => Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName)
                                         @Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName
                                     </td>
-                                    <td width="100">
-                                        @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null, 
-                                            new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee" })
+                                    <td>
+                                        @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null,
+                                            new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee", style = "width:60px" })
                                     </td>
-                                    <td width="100">
+                                    <td>
                                         @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", null,
-                                            new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi" })
+                                            new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi", style = "width:80px" })
                                     </td>
                                 </tr>
                             }

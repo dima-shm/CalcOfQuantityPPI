@@ -26,52 +26,15 @@ namespace CalcOfQuantityPPI.Controllers
         [HttpPost]
         public ActionResult CreateRequest(RequestViewModel model)
         {
-            string result = "";
-            if (CountOfPPIInModel(model) != 0)
+            if (!isEmptyPPIInModel(model))
             {
-                Department department = db.GetDepartment(model.DepartmentId);
-                Request request = new Request
-                {
-                    Date = DateTime.Now,
-                    DepartmentId = department.Id
-                };
-                db.AddRequest(request);
-
-                for (int i = 0; i < model.ProfessionViewModelList.Count; i++)
-                {
-                    if (model.ProfessionViewModelList[i].EmployeesQuantity != 0)
-                    {
-                        ProfessionsInRequest profession = new ProfessionsInRequest
-                        {
-                            RequestId = request.Id,
-                            ProfessionId = db.GetProfessionByName(model.ProfessionViewModelList[i].ProfessionName).Id,
-                            EmployeesQuantity = model.ProfessionViewModelList[i].EmployeesQuantity
-                        };
-                        db.AddProfessionsInRequest(profession);
-
-                        for (int j = 0; j < model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
-                        {
-                            if (model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee != 0)
-                            {
-                                PPIInRequest ppi = new PPIInRequest
-                                {
-                                    ProfessionsInRequestId = profession.Id,
-                                    PPIId = db.GetPPIByName(model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName).Id,
-                                    QuantityOfPPI = model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee,
-                                    TotalQuantity = model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity
-                                };
-                                db.AddPPIInRequest(ppi);
-                            }
-                        }
-                    }
-                }
-                result = "Операция прошла успешно.";
+                AddRequest(model);
+                return View("RequestSuccess");
             }
             else
             {
-                result = "Вы не указали количество СИЗ ни для одной професси.";
+                return View("RequestFailed");
             }
-            return View("RequestResult", model: result);
         }
 
         #region Partial Views
@@ -94,15 +57,80 @@ namespace CalcOfQuantityPPI.Controllers
 
         #endregion
 
+        #region Helpers
+
+        private bool isEmptyPPIInModel(RequestViewModel model)
+        {
+            return CountOfPPIInModel(model) == 0;
+        }
+
         private int CountOfPPIInModel(RequestViewModel model)
         {
             int count = 0;
-            for (int i = 0; i < model.ProfessionViewModelList.Count; i++)
-                if (model.ProfessionViewModelList[i].EmployeesQuantity != 0)
-                    for (int j = 0; j < model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
-                        if (model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee != 0)
+            foreach (ProfessionViewModel profession in model.ProfessionViewModelList)
+                if (profession.EmployeesQuantity != 0)
+                    foreach (QuantityOfPPIViewModel quantityOfPPI in profession.QuantityOfPPI)
+                        if (quantityOfPPI.QuantityForOneEmployee != 0)
                             count++;
             return count;
         }
+
+        private void AddRequest(RequestViewModel model)
+        {
+            Department department = db.GetDepartment(model.DepartmentId);
+            Request request = ConstructRequest(department.Id);
+            db.AddRequest(request);
+            foreach (ProfessionViewModel profession in model.ProfessionViewModelList)
+            {
+                if (profession.EmployeesQuantity != 0)
+                {
+                    ProfessionsInRequest professionsInRequest = ConstructProfessionsInRequest(request.Id, profession);
+                    db.AddProfessionsInRequest(professionsInRequest);
+                    foreach (QuantityOfPPIViewModel quantityOfPPI in profession.QuantityOfPPI)
+                    {
+                        if (quantityOfPPI.QuantityForOneEmployee != 0)
+                        {
+                            PPIInRequest ppi = ConstructPPIInRequest(professionsInRequest.Id, quantityOfPPI);
+                            db.AddPPIInRequest(ppi);
+                        }
+                    }
+                }
+            }
+        }
+
+        private Request ConstructRequest(int departmentId)
+        {
+            Request request = new Request
+            {
+                Date = DateTime.Now,
+                DepartmentId = departmentId
+            };
+            return request;
+        }
+
+        private ProfessionsInRequest ConstructProfessionsInRequest(int requestId, ProfessionViewModel profession)
+        {
+            ProfessionsInRequest professionsInRequest = new ProfessionsInRequest
+            {
+                RequestId = requestId,
+                ProfessionId = db.GetProfessionByName(profession.ProfessionName).Id,
+                EmployeesQuantity = profession.EmployeesQuantity
+            };
+            return professionsInRequest;
+        }
+
+        private PPIInRequest ConstructPPIInRequest(int professionsInRequestId, QuantityOfPPIViewModel quantityOfPPI)
+        {
+            PPIInRequest ppi = new PPIInRequest
+            {
+                ProfessionsInRequestId = professionsInRequestId,
+                PPIId = db.GetPPIByName(quantityOfPPI.PersonalProtectiveItemName).Id,
+                QuantityOfPPI = quantityOfPPI.QuantityForOneEmployee,
+                TotalQuantity = quantityOfPPI.TotalQuantity
+            };
+            return ppi;
+        }
+
+        #endregion
     }
 }
