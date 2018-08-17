@@ -11,5 +11,7 @@ namespace CalcOfQuantityPPI.Data
         public DbSet<PersonalProtectiveItem> PersonalProtectiveItems { get; set; }
         public DbSet<PPIForProfession> PPIForProfession { get; set; }
         public DbSet<Request> Requests { get; set; }
+        public DbSet<ProfessionsInRequest> ProfessionsInRequest { get; set; }
+        public DbSet<PPIInRequest> PPIInRequest { get; set; }
     }
 }

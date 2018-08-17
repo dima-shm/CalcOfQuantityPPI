@@ -7,7 +7,9 @@ namespace CalcOfQuantityPPI.Models
     {
         [Key]
         public int Id { get; set; }
+
         public string Name { get; set; }
+
         public string Head { get; set; }
 
         public int? ParentDepartmentId { get; set; }
