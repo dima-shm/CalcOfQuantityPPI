@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "Подтверждение удаления";
+}
+
+<div class="container"
+     style="padding: 0 20px 20px 20px;
+     background-color: rgb(255,255,255);
+     box-shadow: rgba(0,0,0,0.5) 0 5px 20px;
+     border-radius:5px;
+     min-height:800px">
+    <div class="row" style="background-color:rgb(0, 140, 208); margin-left:-20px; margin-right:-20px; padding:10px;">
+        <div class="col-md-12">
+            <h2 style="color:white;">@ViewData["Title"]</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row text-center">
+        <div class="col-md-6 col-md-offset-3">
+            <h2>Вы уверены, что хотите удалить этот аккаунт?</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <center>
+            <form method="post">
+                <div style="max-width:280px">
+                    <button type="submit" class="btn btn-danger btn-block">Да</button>
+                </div>
+            </form>
+        </center>
+    </div>
+</div>

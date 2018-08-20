@@ -1,0 +1,21 @@
+﻿@if (User.Identity.IsAuthenticated)
+{
+    <form asp-controller="Account" asp-action="Logout" method="post" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <a style="color:white">@User.Identity.Name</a>
+            </li>
+            <li>
+                @Html.ActionLink("Выйти", "Logout", "Account", null, new { style = "color:white" })
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Вход", "Login", "Account", null, new { style = "color:white" })
+        </li>
+    </ul>
+}
