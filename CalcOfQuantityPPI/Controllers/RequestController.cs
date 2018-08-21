@@ -18,8 +18,8 @@ namespace CalcOfQuantityPPI.Controllers
         [HttpGet]
         public ActionResult CreateRequest()
         {
-            ViewBag.ParentDepartments = new SelectList(db.GetDepartments(), "Id", "Name"); ;
-            ViewBag.SubsidiaryDepartments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name"); ;
+            ViewBag.ParentDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
+            ViewBag.SubsidiaryDepartments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name");
             return View(new RequestViewModel());
         }
 

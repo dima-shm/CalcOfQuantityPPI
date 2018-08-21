@@ -5,12 +5,8 @@ namespace CalcOfQuantityPPI.ViewModels.Account
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "Фамилия и инициалы пользователя")]
+        [Display(Name = "Фамилия и инициалы")]
         public string Name { get; set; }
-
-        [Required]
-        [Display(Name = "Роль пользователя")]
-        public string Role { get; set; }
 
         [Required]
         [Display(Name = "Логин")]
@@ -21,8 +17,14 @@ namespace CalcOfQuantityPPI.ViewModels.Account
         public string Password { get; set; }
 
         [Required]
-        [Display(Name = "Подтвердите пароль")]
         [Compare("Password", ErrorMessage = "Пароли не совпадают")]
+        [Display(Name = "Подтвердите пароль")]
         public string PasswordConfirm { get; set; }
+
+        public string Role { get; set; }
+
+        public int ParentDepartmentId { get; set; }
+
+        public int SubsidiaryDepartmentId { get; set; }
     }
 }

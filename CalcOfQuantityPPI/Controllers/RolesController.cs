@@ -62,7 +62,7 @@ namespace CalcOfQuantityPPI.Controllers
             {
                 return View(new EditRoleViewModel { Id = role.Id, Name = role.Name, Description = role.Description });
             }
-            return RedirectToAction("Index");
+            return View("Error");
         }
 
         [HttpPost]

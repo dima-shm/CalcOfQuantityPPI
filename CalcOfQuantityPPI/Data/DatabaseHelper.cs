@@ -11,7 +11,7 @@ namespace CalcOfQuantityPPI.Data
 
         public List<Department> GetDepartments(int? parentDepartmentId = null)
         {
-            return _context.Departments.Where(p => p.ParentDepartmentId == parentDepartmentId).ToList();
+            return _context.Departments.Where(d => d.ParentDepartmentId == parentDepartmentId).ToList();
         }
 
         public Department GetDepartment(int? id)
@@ -19,9 +19,9 @@ namespace CalcOfQuantityPPI.Data
             return _context.Departments.Find(id);
         }
 
-        public Department GetDepartmentByParentId(int? parentId = null)
+        public Department GetDepartmentByParentId(int? parentDepartmentId = null)
         {
-            return _context.Departments.FirstOrDefault(d => d.ParentDepartmentId == parentId);
+            return _context.Departments.FirstOrDefault(d => d.ParentDepartmentId == parentDepartmentId);
         }
 
         public List<ProfessionViewModel> GetProfessionViewModelListByDepartmentId(int? departmentId)

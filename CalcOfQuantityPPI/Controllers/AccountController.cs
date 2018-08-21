@@ -39,36 +39,11 @@ namespace CalcOfQuantityPPI.Controllers
             }
         }
 
-        [HttpGet]
-        [Authorize(Roles = "admin")]
-        public ActionResult Register()
-        {
-            ViewBag.Roles = new SelectList(RoleManager.Roles, "Name", "Description");
-            return View();
-        }
+        private DatabaseHelper db;
 
-        [HttpPost]
-        [Authorize(Roles = "admin")]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public AccountController()
         {
-            if (ModelState.IsValid)
-            {
-                User user = new User { UserName = model.Login, Email = model.Login, Name = model.Name };
-                IdentityResult result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await UserManager.AddToRoleAsync(user.Id, model.Role);
-                    return RedirectToAction("Index", "Admin");
-                }
-                else
-                {
-                    foreach (string error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error);
-                    }
-                }
-            }
-            return View(model);
+            db = new DatabaseHelper();
         }
 
         [HttpGet]
@@ -91,7 +66,7 @@ namespace CalcOfQuantityPPI.Controllers
                 {
                     ClaimsIdentity claim = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
                     AuthenticationManager.SignOut();
-                    AuthenticationManager.SignIn(new AuthenticationProperties{ IsPersistent = true }, claim);
+                    AuthenticationManager.SignIn(new AuthenticationProperties { IsPersistent = true }, claim);
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -107,24 +82,57 @@ namespace CalcOfQuantityPPI.Controllers
 
         [HttpGet]
         [Authorize(Roles = "admin")]
+        public ActionResult Register()
+        {
+            InitRolesAndDepartmentOnViewBag();
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = new User { UserName = model.Login, Email = model.Login, Name = model.Name };
+                initUserDepartmentIdByRole(user, model);
+                IdentityResult result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    await UserManager.AddToRoleAsync(user.Id, model.Role);
+                    return RedirectToAction("Index", "Admin");
+                }
+                else
+                {
+                    foreach (string error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error);
+                    }
+                }
+            }
+            InitRolesAndDepartmentOnViewBag();
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
         public ActionResult Edit(string id)
         {
             User user = UserManager.FindById(id);
             if (user != null)
             {
-                var userRoles = UserManager.GetRoles(id);
-                var allRoles = new List<Role>(RoleManager.Roles);
                 EditViewModel model = new EditViewModel
                 {
                     Id = id,
                     Name = user.Name,
                     Login = user.Email,
-                    UserRoles = userRoles,
-                    AllRoles = allRoles
+                    Role = RoleManager.FindByName(UserManager.GetRoles(id).First()),
+                    Department = db.GetDepartment(user.DepartmentId),
+                    DatabaseHelper = db
                 };
                 return View(model);
             }
-            return RedirectToAction("Login", "Account");
+            return View("Error");
         }
 
         [HttpPost]
@@ -137,7 +145,7 @@ namespace CalcOfQuantityPPI.Controllers
                 user.Name = model.Name;
                 user.Email = model.Login;
                 user.UserName = model.Login;
-                EditUserRoles(model.Id, roles);
+                user.DepartmentId = model.Department.Id;
                 IdentityResult result = UserManager.Update(user);
                 if (result.Succeeded)
                 {
@@ -155,18 +163,47 @@ namespace CalcOfQuantityPPI.Controllers
             return View(model);
         }
 
-        private void EditUserRoles(string userId, List<string> roles)
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult ChangePassword(string userId)
         {
             User user = UserManager.FindById(userId);
             if (user != null)
             {
-                var userRoles = UserManager.GetRoles(userId);
-                var allRoles = new List<Role>(RoleManager.Roles);
-                var addedRoles = roles.Except(userRoles);
-                var removedRoles = userRoles.Except(roles);
-                UserManager.AddToRoles(userId, addedRoles.ToArray());
-                UserManager.RemoveFromRoles(userId, removedRoles.ToArray());
+                ChangePasswordViewModel model = new ChangePasswordViewModel
+                {
+                    UserId = user.Id,
+                    Login = user.Email
+                };
+                return View(model);
             }
+            return View("Error");
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = UserManager.FindByName(model.Login);
+                if (user == null)
+                {
+                    return View("Error");
+                }
+                var validPass = await UserManager.PasswordValidator.ValidateAsync(model.NewPassword);
+                if (validPass.Succeeded)
+                {
+                    user.PasswordHash = UserManager.PasswordHasher.HashPassword(model.NewPassword);
+                    var res = UserManager.Update(user);
+                    if (res.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Admin");
+                    }
+                }
+                return View("Error");
+            }
+            return View(model);
         }
 
         [HttpGet]
@@ -190,7 +227,34 @@ namespace CalcOfQuantityPPI.Controllers
                     return RedirectToAction("Index", "Admin");
                 }
             }
-            return RedirectToAction("Index", "Admin");
+            return View("Error");
         }
+
+        #region Helpers
+
+        private void InitRolesAndDepartmentOnViewBag()
+        {
+            ViewBag.Roles = new SelectList(RoleManager.Roles, "Name", "Description");
+            ViewBag.ParentDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
+            ViewBag.SubsidiaryDepartments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name");
+        }
+
+        private void initUserDepartmentIdByRole(User user, RegisterViewModel model)
+        {
+            if (model.Role == "structural-department-head")
+            {
+                user.DepartmentId = model.ParentDepartmentId;
+            }
+            else if (model.Role == "department-head")
+            {
+                user.DepartmentId = model.SubsidiaryDepartmentId;
+            }
+            else
+            {
+                user.DepartmentId = null;
+            }
+        }
+
+        #endregion
     }
 }

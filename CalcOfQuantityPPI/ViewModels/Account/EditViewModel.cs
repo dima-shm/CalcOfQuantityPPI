@@ -1,5 +1,5 @@
-﻿using CalcOfQuantityPPI.Models;
-using System.Collections.Generic;
+﻿using CalcOfQuantityPPI.Data;
+using CalcOfQuantityPPI.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace CalcOfQuantityPPI.ViewModels.Account
@@ -9,22 +9,17 @@ namespace CalcOfQuantityPPI.ViewModels.Account
         public string Id { get; set; }
 
         [Required]
-        [Display(Name = "Фамилия и инициалы пользователя")]
+        [Display(Name = "Фамилия и инициалы")]
         public string Name { get; set; }
-
-        [Required]
-        [Display(Name = "Роли пользователя")]
-        public List<Role> AllRoles { get; set; }
-        public IList<string> UserRoles { get; set; }
 
         [Required]
         [Display(Name = "Логин")]
         public string Login { get; set; }
 
-        public EditViewModel()
-        {
-            AllRoles = new List<Role>();
-            UserRoles = new List<string>();
-        }
+        public Role Role { get; set; }
+
+        public Department Department { get; set; }
+
+        public DatabaseHelper DatabaseHelper { get; set; }
     }
 }

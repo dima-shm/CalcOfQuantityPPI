@@ -24,7 +24,18 @@
                 </div>
                 <div class="form-group">
                     @Html.Label("Роль пользователя")
-                    @Html.DropDownListFor(model => model.Role, ViewBag.Roles as SelectList, new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.Role, ViewBag.Roles as SelectList, 
+                        new { id = "roles", @class = "form-control" })
+                </div>
+                <div id="parentDepartments" class="form-group">
+                    @Html.Label("Структурное подразделение:")<br />
+                    @Html.DropDownListFor(model => model.ParentDepartmentId, ViewBag.ParentDepartments as SelectList,
+                        new { id = "parentDepartment", @class = "form-control" })
+                </div>
+                <div id="subsidiaryDepartments" class="form-group">
+                    @Html.Label("Подразделение")<br />
+                    @Html.DropDownListFor(model => model.SubsidiaryDepartmentId, ViewBag.SubsidiaryDepartments as SelectList, 
+                        new { id = "subsidiaryDepartment", @class = "form-control" })
                 </div>
                 <div class="form-group">
                     @Html.Label("Логин")
@@ -48,3 +59,42 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            $('#roles').val('admin');
+            $('#parentDepartments').hide(100);
+            $('#subsidiaryDepartments').hide(100);
+        });
+        $('#roles').change(function () {
+            updateRoleList(this.value);
+        });
+        $('#parentDepartment').change(function () {
+            updateSubsidiaryDepartmentList();
+        });
+        $('#subsidiaryDepartment').change(function() {
+            updateProfessionsAndPPITable('#subsidiaryDepartment');
+        });
+        function updateRoleList(role) {
+            if (role == "structural-department-head") {
+                $('#parentDepartments').show(100);
+                $('#subsidiaryDepartments').hide(100);
+            } else if (role == "department-head") {
+                $('#parentDepartments').show(100);
+                $('#subsidiaryDepartments').show(100);
+            } else {
+                $('#parentDepartments').hide(100);
+                $('#subsidiaryDepartments').hide(100);
+            }
+        }
+        function updateSubsidiaryDepartmentList() {
+            var parentDepartmentId = $('#parentDepartment').val();
+            $.ajax({
+                success: function () {
+                    $('#subsidiaryDepartment').load('@Url.Action("SubsidiaryDepartmentList", "Request")/' + parentDepartmentId);
+                }
+            });
+        }
+    </script>
+}

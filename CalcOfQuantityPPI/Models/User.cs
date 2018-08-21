@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CalcOfQuantityPPI.Models
 {
@@ -6,8 +7,8 @@ namespace CalcOfQuantityPPI.Models
     {
         public string Name { get; set; }
 
-        public User()
-        {
-        }
+        public int? DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        private Department Department { get; set; }
     }
 }

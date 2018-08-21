@@ -202,6 +202,10 @@
     <Compile Include="Migrations\201808201030108_DataMigration.Designer.cs">
       <DependentUpon>201808201030108_DataMigration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808210526485_AddDepartmentIdMigration.cs" />
+    <Compile Include="Migrations\201808210526485_AddDepartmentIdMigration.Designer.cs">
+      <DependentUpon>201808210526485_AddDepartmentIdMigration.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\PersonalProtectiveItem.cs" />
@@ -221,6 +225,7 @@
     <Compile Include="ViewModels\Request\RequestViewModel.cs" />
     <Compile Include="ViewModels\Roles\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\Roles\EditRoleViewModel.cs" />
+    <Compile Include="ViewModels\Account\ChangePasswordViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -276,6 +281,7 @@
     <Content Include="Views\Account\Delete.cshtml" />
     <Content Include="Views\Account\Edit.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Account\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -299,6 +305,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808201030108_DataMigration.resx">
       <DependentUpon>201808201030108_DataMigration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808210526485_AddDepartmentIdMigration.resx">
+      <DependentUpon>201808210526485_AddDepartmentIdMigration.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

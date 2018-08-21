@@ -113,3 +113,4 @@ D:\SDA\Расчет количества и стоимости СИЗ\CalcOfQuan
 D:\SDA\Расчет количества и стоимости СИЗ\CalcOfQuantityPPI\CalcOfQuantityPPI\obj\Debug\CalcOfQuantityPPI.Migrations.InitialCreate.resources
 D:\SDA\Расчет количества и стоимости СИЗ\CalcOfQuantityPPI\CalcOfQuantityPPI\obj\Debug\CalcOfQuantityPPI.csproj.GenerateResource.cache
 D:\SDA\Расчет количества и стоимости СИЗ\CalcOfQuantityPPI\CalcOfQuantityPPI\obj\Debug\CalcOfQuantityPPI.Migrations.DataMigration.resources
+D:\SDA\Расчет количества и стоимости СИЗ\CalcOfQuantityPPI\CalcOfQuantityPPI\obj\Debug\CalcOfQuantityPPI.Migrations.AddDepartmentIdMigration.resources

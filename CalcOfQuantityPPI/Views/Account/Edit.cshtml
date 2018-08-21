@@ -1,5 +1,4 @@
-﻿@using CalcOfQuantityPPI.Models
-@model CalcOfQuantityPPI.ViewModels.Account.EditViewModel
+﻿@model CalcOfQuantityPPI.ViewModels.Account.EditViewModel
 @{
     ViewBag.Title = "Изменение данных пользователя";
 }
@@ -18,36 +17,48 @@
     <br />
     <form asp-action="Edit" asp-controller="Account" method="post">
         <div class="row">
-            <div class="col-md-5 col-md-offset-1">
-                @Html.HiddenFor(model => model.Id)
-                <div class="form-group">
-                    @Html.Label("Фамилия и инициалы пользователя")
-                    @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.Label("Логин")
-                    @Html.TextBoxFor(model => model.Login, new { @class = "form-control" })
-                </div>
-                <div class="form-group">
-                    @Html.ValidationSummary(null, new { style = "color:red" })
-                </div>
-                <div class="form-group">
-                    @Html.ActionLink("Изменить пароль", "ChangePassword", "Account", null,
-                        new { @class = "btn btn-block btn-info", style = "max-width:280px" })
-                </div>
-                <div style="max-width:280px">
-                    <button type="submit" class="btn btn-success btn-block">Сохранить</button>
-                </div>
-            </div>
-            <div class="col-md-5 col-md-offset-1">
-                <div class="form-group">
-                    @Html.Label("Роли пользователя:")
-                    <div class="form-group">
-                        @foreach (Role role in Model.AllRoles)
-                        {
-                            <input type="radio" name="roles" value="@role.Name" class="form-check-input"
-                                   @(Model.UserRoles.Contains(role.Name) ? "checked=\"checked\"" : "") />@role.Name <br />
-                        }
+            <div class="col-md-10 col-md-offset-2">
+                <div class="row">
+                    <div class="col-md-6">
+                        @Html.HiddenFor(model => model.Id, new { id = "userId" })
+                        <div class="form-group">
+                            @Html.Label("Фамилия и инициалы пользователя")
+                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Логин")
+                            @Html.TextBoxFor(model => model.Login, new { @class = "form-control" })
+                        </div>
+                        <div class="form-group">
+                            @Html.ValidationSummary(null, new { style = "color:red" })
+                        </div>
+                        <div class="form-group">
+                            @Html.ActionLink("Изменить пароль", "ChangePassword", "Account", new { id = "changePassword", userId = @Model.Id }, null)
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.Label("Роль пользователя:") <br />
+                            @Model.Role.Description
+                            @if (@Model.Department != null)
+                            {
+                                <i>«@Model.Department.Name»</i>
+                                if (@Model.Department.ParentDepartmentId != null)
+                                {
+                                    <p>
+                                        В составе cтруктурного подразделения
+                                        <i>«@Model.DatabaseHelper.GetDepartment(@Model.Department.ParentDepartmentId).Name»</i>
+                                    </p>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <div style="max-width:280px">
+                                <button type="submit" class="btn btn-success btn-block">Сохранить</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
