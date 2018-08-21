@@ -1,13 +1,24 @@
 ﻿using CalcOfQuantityPPI.Data;
 using CalcOfQuantityPPI.Models;
 using CalcOfQuantityPPI.ViewModels.Request;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
+using System.Web;
 using System.Web.Mvc;
 
 namespace CalcOfQuantityPPI.Controllers
 {
     public class RequestController : Controller
     {
+        private ApplicationUserManager UserManager
+        {
+            get
+            {
+                return HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+        }
+
         private DatabaseHelper db;
 
         public RequestController()
@@ -18,9 +29,14 @@ namespace CalcOfQuantityPPI.Controllers
         [HttpGet]
         public ActionResult CreateRequest()
         {
-            ViewBag.ParentDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
-            ViewBag.SubsidiaryDepartments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name");
-            return View(new RequestViewModel());
+            User user = UserManager.FindById(User.Identity.GetUserId());
+            RequestViewModel model = new RequestViewModel
+            {
+                DepartmentId = user.DepartmentId,
+                ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(user.DepartmentId),
+                DatabaseHelper = db
+            };
+            return View(model);
         }
 
         [HttpPost]
@@ -36,26 +52,6 @@ namespace CalcOfQuantityPPI.Controllers
                 return View("RequestFailed");
             }
         }
-
-        #region Partial Views
-
-        [HttpGet]
-        public PartialViewResult SubsidiaryDepartmentList(int id)
-        {
-            return PartialView(db.GetDepartments(id));
-        }
-
-        [HttpGet]
-        public PartialViewResult ProfessionsAndPPITable(int id)
-        {
-            RequestViewModel model = new RequestViewModel
-            {
-                ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
-            };
-            return PartialView(model);
-        }
-
-        #endregion
 
         #region Helpers
 

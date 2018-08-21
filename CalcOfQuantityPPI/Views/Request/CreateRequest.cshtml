@@ -18,49 +18,15 @@
     <div class="row">
         <form asp-action="CreateRequest" asp-controller="Request" method="post">
             <div class="col-md-3">
-                @Html.Label("Структурное подразделение:")<br />
-                @Html.DropDownList("parentDepartment", ViewBag.ParentDepartments as SelectList, new { @class = "form-control" })
                 <br />
-                @Html.Label("Подразделение")<br />
-                @Html.DropDownListFor(model => model.DepartmentId, ViewBag.SubsidiaryDepartments as SelectList, new { id = "subsidiaryDepartment", @class = "form-control" })
+                @Html.Hidden("DepartmentId", @Model.DepartmentId)
+                <h2>@Model.DatabaseHelper.GetDepartment(Model.DepartmentId).Name</h2>
                 <br />
                 <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
             </div>
             <div class="col-md-9">
-                <table id="professionsTabel"></table>
+                @Html.Partial("ProfessionAndPPITable")
             </div>
         </form>
     </div>
 </div>
-
-@section scripts{
-    <script type="text/javascript">
-        $(function () {
-            updateSubsidiaryDepartmentList();
-            updateProfessionsAndPPITable('#parentDepartment');
-        });
-        $('#parentDepartment').change(function () {
-            updateSubsidiaryDepartmentList();
-            updateProfessionsAndPPITable('#parentDepartment');
-        });
-        $('#subsidiaryDepartment').change(function() {
-            updateProfessionsAndPPITable('#subsidiaryDepartment');
-        });
-        function updateSubsidiaryDepartmentList() {
-            var parentDepartmentId = $('#parentDepartment').val();
-            $.ajax({
-                success: function () {
-                    $('#subsidiaryDepartment').load('@Url.Action("SubsidiaryDepartmentList", "Request")/' + parentDepartmentId);
-                }
-            });
-        }
-        function updateProfessionsAndPPITable(id) {
-            var subsidiaryDepartmentId = $(id).val();
-            $.ajax({
-                success: function () {
-                    $('#professionsTabel').load('@Url.Action("ProfessionsAndPPITable", "Request")/' + subsidiaryDepartmentId);
-                }
-            });
-        }
-    </script>
-}
