@@ -1,0 +1,82 @@
+﻿@model CalcOfQuantityPPI.ViewModels.Request.RequestViewModel
+
+<div class="panel panel-primary">
+    <table id="professionsTabel" class="table table-hover">
+        <thead style="background-color:steelblue; color:white">
+            <tr>
+                <th width="180">Профессия</th>
+                <th width="70">Численность сотрудников</th>
+                <th width="300">Наименование средств индивидуальной защиты</th>
+                <th width="70">Количество на одного сотрудника</th>
+                <th width="90">Всего</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (int i = 0; i < Model.ProfessionViewModelList.Count; i++)
+            {
+                <tr>
+                    <td width="180">
+                        @Html.HiddenFor(model => Model.ProfessionViewModelList[i].ProfessionName)
+                        @Model.ProfessionViewModelList[i].ProfessionName
+                    </td>
+                    <td>
+                        <center>
+                            @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "",
+                                new { id = "employeesQuantity", type = "number", min = "0", max = "1000", @class = "form-control", style = "width:70px" })
+                        </center>
+                    </td>
+                    <td colspan="3">
+                        <table class="table table-hover calc-table">
+                            <tbody>
+                                @for (int j = 0; j < Model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.Hidden("quantityOfEmployeesHidden", "", new { @class = "quantity-of-employees" })
+                                        </td>
+                                        <td width="300">
+                                            @Html.HiddenFor(model => Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName)
+                                            @Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName
+                                        </td>
+                                        <td>
+                                            @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null,
+                                                new { type = "number", min = "0", max = "1000", @class = "form-control quantity-of-ppi-for-one-employee", style = "width:70px" })
+                                        </td>
+                                        <td>
+                                            @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", null,
+                                                new { id = "totalQuantity", type = "text", @readonly = "readonly", @class = "form-control total-quantity-of-ppi", style = "width:90px" })
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(function () {
+        calculateTotalQuantity();
+    });
+    $('input').bind('input', function () {
+        $(this).closest('tr').find('input').each(function (i) {
+            var numberInProfession = $(this).closest('tr').find('input[id=employeesQuantity]').val();
+            if (isNaN(numberInProfession) || numberInProfession === undefined) {
+                return;
+            }
+            $(this).closest('tr').find('input.quantity-of-employees').val(numberInProfession);
+        });
+        calculateTotalQuantity();
+    });
+    function calculateTotalQuantity() {
+        $('.calc-table tr').each(function () {
+            var hours = $(this).find('input.quantity-of-employees').val();
+            var rate = $(this).find('input.quantity-of-ppi-for-one-employee').val();
+            $(this).find('input.total-quantity-of-ppi').val(hours * rate);
+        });
+        return false;
+    }
+</script>

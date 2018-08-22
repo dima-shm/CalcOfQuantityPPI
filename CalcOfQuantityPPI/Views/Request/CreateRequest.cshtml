@@ -19,14 +19,31 @@
         <form asp-action="CreateRequest" asp-controller="Request" method="post">
             <div class="col-md-3">
                 <br />
-                @Html.Hidden("DepartmentId", @Model.DepartmentId)
+                @Html.Hidden("DepartmentId", @Model.DepartmentId, new { id = "parentDepartment" })
                 <h2>@Model.DatabaseHelper.GetDepartment(Model.DepartmentId).Name</h2>
                 <br />
                 <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
             </div>
             <div class="col-md-9">
-                @Html.Partial("ProfessionAndPPITable")
+                <table id="professionsTabel" style="width:100%"></table>
             </div>
         </form>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            updateProfessionsAndPPITable('#parentDepartment');
+        });
+
+        function updateProfessionsAndPPITable(id) {
+            var subsidiaryDepartmentId = $(id).val();
+            $.ajax({
+                success: function () {
+                    $('#professionsTabel').load('@Url.Action("ProfessionsAndPPITable", "Request")/' + subsidiaryDepartmentId);
+                }
+            });
+        }
+    </script>
+}

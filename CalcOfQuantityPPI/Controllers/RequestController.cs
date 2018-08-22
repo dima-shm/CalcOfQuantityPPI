@@ -53,6 +53,16 @@ namespace CalcOfQuantityPPI.Controllers
             }
         }
 
+        [HttpGet]
+        public PartialViewResult ProfessionsAndPPITable(int id)
+        {
+            RequestViewModel model = new RequestViewModel
+            {
+                ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
+            };
+            return PartialView(model);
+        }
+
         #region Helpers
 
         private bool isEmptyPPIInModel(RequestViewModel model)
