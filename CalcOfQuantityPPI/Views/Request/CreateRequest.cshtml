@@ -22,7 +22,8 @@
                 @Html.Hidden("DepartmentId", @Model.DepartmentId, new { id = "parentDepartment" })
                 <h2>@Model.DatabaseHelper.GetDepartment(Model.DepartmentId).Name</h2>
                 <br />
-                <button type="submit" class="btn btn-primary btn-block">Отправить заявку</button>
+                <button type="submit" class="btn btn-success btn-block">Готово</button>
+                <br />
             </div>
             <div class="col-md-9">
                 <table id="professionsTabel" style="width:100%"></table>

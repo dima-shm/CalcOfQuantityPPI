@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<CalcOfQuantityPPI.Models.Role>
 @{
-    ViewBag.Title = "Роли";
+    ViewBag.Title = "Упраквление ролями пользователей";
 }
 
 <div class="container"
@@ -15,34 +15,37 @@
         </div>
     </div>
     <br />
-    @Html.ActionLink("Добавить роль", "Create", "Role", null,
-        new { @class = "btn btn-primary" })
+    @Html.ActionLink("Добавить роль", "Create", "Roles", null,
+        new { @class = "btn btn-success", disabled = "disabled", @style = "pointer-events: none;" })
     <hr />
-    <br />
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Название</th>
-                        <th>Описание</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
+            <div class="panel panel-primary">
+                <table class="table table-hover">
+                    <thead style="background-color:steelblue; color:white">
                         <tr>
-                            <td>@item.Name</td>
-                            <td>@item.Description</td>
-                            <td>
-                                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                            </td>
+                            <th>Название</th>
+                            <th>Описание</th>
+                            <th></th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Description</td>
+                                <td>
+                                    @Html.ActionLink("Изменить", "Edit", new { id = item.Id },
+                                        new { @class = "btn btn-sm btn-primary", disabled = "disabled", @style = "pointer-events: none;" })
+                                    @Html.ActionLink("Удалить", "Delete", new { id = item.Id },
+                                        new { @class = "btn btn-sm btn-danger", disabled = "disabled", @style = "pointer-events: none;" })
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

@@ -16,42 +16,57 @@
         </div>
     </div>
     <br />
-    <div class="row">
-        <div class="col-md-12">
+    @Html.ActionLink("Управление ролями пользователей", "Index", "Roles", null,
+        new { @class = "btn btn-primary" })
+    <hr />
+    <div class="panel panel-primary">
+        <div class="panel-heading">Пользователи</div>
+        <div class="panel-body">
             @Html.ActionLink("Добавить нового пользователя", "Register", "Account", null,
-                new { @class = "btn btn-success btn-block", @style = "max-width:280px;" })
+                new { @class = "btn btn-success", @style = "max-width:280px;" })
             <br />
-            <div class="panel panel-primary">
-                <div class="panel-heading">Пользователи</div>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Логин</th>
-                            <th>Имя</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (User user in Model)
-                        {
+            <br />
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
                             <tr>
-                                <td>@user.Id</td>
-                                <td style="color:dodgerblue">@user.UserName</td>
-                                <td style="color:steelblue">@user.Name</td>
-                                <td>
-                                    @Html.ActionLink("Изменить", "Edit", "Account", new { id = @user.Id },
-                                        new { @class = "btn btn-sm btn-primary", @style = "max-width:280px;" })
-                                    @if (User.Identity.Name != @user.UserName)
-                                    {
-                                        @Html.ActionLink("Удалить", "Delete", "Account", new { id = @user.Id },
-                                                     new { @class = "btn btn-sm btn-danger", @style = "max-width:280px;" })
-                                    }
-                                </td>
+                                <th>Идентификатор</th>
+                                <th>Логин</th>
+                                <th>Имя</th>
+                                <th></th>
+                                <th></th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach (User user in Model)
+                            {
+                                <tr>
+                                    <td>@user.Id</td>
+                                    <td style="color:dodgerblue">@user.UserName</td>
+                                    <td style="color:steelblue">@user.Name</td>
+                                    @if (user.DepartmentId == null)
+                                    {
+                                        <td style="color:forestgreen">Администратор</td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                    }
+                                    <td>
+                                        @Html.ActionLink("Изменить", "Edit", "Account", new { id = @user.Id },
+                                            new { @class = "btn btn-sm btn-primary", @style = "max-width:280px;" })
+                                        @if (User.Identity.Name != @user.UserName)
+                                        {
+                                            @Html.ActionLink("Удалить", "Delete", "Account", new { id = @user.Id },
+                                                     new { @class = "btn btn-sm btn-danger", @style = "max-width:280px;" })
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
