@@ -87,10 +87,10 @@
             }
         }
         function updateDepartmentList() {
-            var parentDepartmentId = $('#structural-department').val();
+            var structuralDepartmentId = $('#structural-department').val();
             $.ajax({
                 success: function () {
-                    $('#department').load('@Url.Action("DepartmentList", "Account")/' + parentDepartmentId);
+                    $('#department').load('@Url.Action("DepartmentList", "Account")/' + structuralDepartmentId);
                 }
             });
         }

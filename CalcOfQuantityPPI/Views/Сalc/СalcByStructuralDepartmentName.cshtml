@@ -14,8 +14,8 @@
             <h2 style="color:white;">
                 Расчет потребности СИЗ за
                 <b style="color:powderblue">@DateTime.Now.Year</b>
-                год для выбранного подразделения, входящего в состав структурного подразделения
-                <i style="color:powderblue">«@Model.DatabaseHelper.GetDepartment(Model.StructuralDepartmentId).Name»</i>
+                год для выбранного подразделения, входящего в состав
+                <i style="color:powderblue"> УП «Минскводоканал»</i>
             </h2>
         </div>
     </div>
@@ -24,15 +24,18 @@
             <form asp-action="SearchByDepartmentName" asp-controller="Search" method="post">
                 <h3>Выберите подразделение</h3>
                 <div class="row">
-                    <div class="col-md-6 col-lg-offset-3">
-                        <div class="col-md-6">
+                    <div class="col-md-6 col-lg-offset-4">
+                        <div id="structural-departments" class="form-group">
+                            @Html.Label("Структурное подразделение:")<br />
+                            @Html.DropDownListFor(model => model.StructuralDepartmentId, ViewBag.StructuralDepartments as SelectList,
+                                new { id = "structural-department", @class = "form-control" })
+                        </div>
+                        <div id="departments" class="form-group">
+                            @Html.Label("Подразделение")<br />
                             @Html.DropDownListFor(model => model.DepartmentId, ViewBag.Departments as SelectList,
-                                new { @class = "form-control" })
-                            <br />
+                                new { id = "department", @class = "form-control" })
                         </div>
-                        <div class="col-md-6">
-                            <button type="submit" class="btn btn-sm btn-success btn-block" style="max-width:280px">Готово</button>
-                        </div>
+                        <button type="submit" class="btn btn-sm btn-success btn-block" style="max-width:280px">Готово</button>
                     </div>
                 </div>
                 <hr />
@@ -66,3 +69,32 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            updateDepartmentList();
+        });
+        $('#structural-department').change(function () {
+            updateDepartmentList();
+            $('#departments').show(100);
+        });
+        function updateRoleList(role) {
+            if (role == "structural-department-head") {
+                $('#departments').hide(100);
+            } else if (role == "department-head") {
+                $('#departments').show(100);
+            } else {
+                $('#departments').hide(100);
+            }
+        }
+        function updateDepartmentList() {
+            var structuralDepartmentId = $('#structural-department').val();
+            $.ajax({
+                success: function () {
+                    $('#department').load('@Url.Action("DepartmentList", "Сalc")/' + structuralDepartmentId);
+                }
+            });
+        }
+    </script>
+}

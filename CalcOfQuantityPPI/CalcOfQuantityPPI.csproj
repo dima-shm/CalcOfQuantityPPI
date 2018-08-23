@@ -284,6 +284,8 @@
     <Content Include="Views\Сalc\СalcByDepartmentName.cshtml" />
     <Content Include="Views\Сalc\СalcByPPIName.cshtml" />
     <Content Include="Views\Account\DepartmentList.cshtml" />
+    <Content Include="Views\Сalc\СalcByStructuralDepartmentName.cshtml" />
+    <Content Include="Views\Сalc\DepartmentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

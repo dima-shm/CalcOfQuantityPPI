@@ -76,7 +76,7 @@ namespace CalcOfQuantityPPI.Data
             return _context.Departments.First(d => d.Name == name);
         }
 
-        public List<PPIViewModel> PPIViewModelByDepartment(Department department)
+        public List<PPIViewModel> GetPPIViewModelByDepartment(Department department)
         {
             List<int?> professionsIdInDepartment = _context.ProfessionsInDepartment.Where(p => p.DepartmentId == department.Id).Select(p => p.ProfessionId).ToList();
             List<List<int?>> ppiIdForProfessions = new List<List<int?>>();
@@ -104,6 +104,8 @@ namespace CalcOfQuantityPPI.Data
             }
             return ppiViewModel;
         }
+
+        #region PrivateMethods
 
         private int GetTotalQuantityOfPPIForAYear(int departmentId, int ppiId)
         {
@@ -134,7 +136,7 @@ namespace CalcOfQuantityPPI.Data
         private List<Profession> GetProfessionsByDepartmentId(int? departmentId)
         {
             List<Profession> professions = new List<Profession>();
-            if (isParentDepartment(GetDepartment(departmentId)))
+            if (isStructuralDepartment(GetDepartment(departmentId)))
             {
                 professions = GetProfessionsById(GetDepartmentByParentId(departmentId).Id);
             }
@@ -145,7 +147,7 @@ namespace CalcOfQuantityPPI.Data
             return professions;
         }
 
-        private bool isParentDepartment(Department department)
+        private bool isStructuralDepartment(Department department)
         {
             return department.ParentDepartmentId == null;
         }
@@ -189,5 +191,7 @@ namespace CalcOfQuantityPPI.Data
             }
             return QuantityOfPPI.ToArray();
         }
+
+        #endregion
     }
 }

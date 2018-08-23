@@ -36,8 +36,16 @@
                                 @Html.ActionLink("По наименованию", "СalcByPPIName", "Сalc", null,
                                     new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
                                 <br />
-                                @Html.ActionLink("По подразделению", "СalcByDepartmentName", "Сalc", null,
-                                    new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                @if (User.IsInRole("admin"))
+                                {
+                                    @Html.ActionLink("По подразделению", "СalcByStructuralDepartmentName", "Сalc", null,
+                                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                }
+                                else
+                                {
+                                    @Html.ActionLink("По подразделению", "СalcByDepartmentName", "Сalc", null,
+                                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                }
                             </center>
                         </fieldset>
                     }
@@ -53,9 +61,7 @@
         }
         else
         {
-            <div class="row text-center">
-                <h2>Выполните  вход</h2>
-            </div>
+            Response.Redirect("~/Account/Login");
         }
     </fieldset>
 </div>

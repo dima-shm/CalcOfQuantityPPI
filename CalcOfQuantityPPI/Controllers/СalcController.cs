@@ -30,11 +30,12 @@ namespace CalcOfQuantityPPI.Controllers
         public ActionResult СalcByDepartmentName()
         {
             User user = UserManager.FindById(User.Identity.GetUserId());
-            ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Name", "Name");
+            ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Id", "Name");
             return View(new CalcViewModel
             {
-                StructuralDepartmentName = db.GetDepartment(user.DepartmentId).Name,
-                PPIViewModel = new List<PPIViewModel>()
+                StructuralDepartmentId = db.GetDepartment(user.DepartmentId).Id,
+                PPIViewModel = new List<PPIViewModel>(),
+                DatabaseHelper = db
             });
         }
 
@@ -42,12 +43,37 @@ namespace CalcOfQuantityPPI.Controllers
         public ActionResult СalcByDepartmentName(CalcViewModel model)
         {
             User user = UserManager.FindById(User.Identity.GetUserId());
-            ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Name", "Name");
+            ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Id", "Name");
             CalcViewModel resultModel = new CalcViewModel
             {
-                StructuralDepartmentName = db.GetDepartment(user.DepartmentId).Name,
-                DepartmentName = model.DepartmentName,
-                PPIViewModel = db.PPIViewModelByDepartment(db.GetDepartment(model.DepartmentName))
+                StructuralDepartmentId = db.GetDepartment(user.DepartmentId).Id,
+                PPIViewModel = db.GetPPIViewModelByDepartment(db.GetDepartment(model.DepartmentId)),
+                DatabaseHelper = db
+            };
+            return View(resultModel);
+        }
+
+        [HttpGet]
+        public ActionResult СalcByStructuralDepartmentName()
+        {
+            User user = UserManager.FindById(User.Identity.GetUserId());
+            InitDepartmentsOnViewBag();
+            return View(new CalcViewModel
+            {
+                DepartmentId = db.GetDepartmentByParentId().Id,
+                PPIViewModel = new List<PPIViewModel>()
+            });
+        }
+
+        [HttpPost]
+        public ActionResult СalcByStructuralDepartmentName(CalcViewModel model)
+        {
+            User user = UserManager.FindById(User.Identity.GetUserId());
+            InitDepartmentsOnViewBag();
+            CalcViewModel resultModel = new CalcViewModel
+            {
+                DepartmentId = model.DepartmentId,
+                PPIViewModel = db.GetPPIViewModelByDepartment(db.GetDepartment(model.DepartmentId))
             };
             return View(resultModel);
         }
@@ -57,5 +83,25 @@ namespace CalcOfQuantityPPI.Controllers
         {
             return View();
         }
+
+        #region PartialViews
+
+        [HttpGet]
+        public PartialViewResult DepartmentList(int id)
+        {
+            return PartialView(db.GetDepartments(id));
+        }
+
+        #endregion
+
+        #region Helpers
+
+        private void InitDepartmentsOnViewBag()
+        {
+            ViewBag.StructuralDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
+            ViewBag.Departments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId().Id), "Id", "Name");
+        }
+
+        #endregion
     }
 }
