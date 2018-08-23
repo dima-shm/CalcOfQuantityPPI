@@ -198,6 +198,7 @@ namespace CalcOfQuantityPPI.Controllers
                     var res = UserManager.Update(user);
                     if (res.Succeeded)
                     {
+                        AuthenticationManager.SignOut();
                         return RedirectToAction("Index", "Admin");
                     }
                 }
