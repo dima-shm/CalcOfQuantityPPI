@@ -78,11 +78,12 @@ namespace CalcOfQuantityPPI.Data
 
         public List<PPIViewModel> GetPPIViewModelByDepartment(Department department)
         {
-            List<int?> professionsIdInDepartment = _context.ProfessionsInDepartment.Where(p => p.DepartmentId == department.Id).Select(p => p.ProfessionId).ToList();
+            List<Profession> professionsInDepartment = GetProfessionsById(department.Id);
             List<List<int?>> ppiIdForProfessions = new List<List<int?>>();
-            foreach (int professionId in professionsIdInDepartment)
+            foreach (Profession profession in professionsInDepartment)
             {
-                ppiIdForProfessions.Add(_context.PPIForProfession.Where(p => p.ProfessionId == professionId).Select(p => p.PPIId).ToList());
+                ppiIdForProfessions.Add(_context.PPIForProfession
+                    .Where(p => p.ProfessionId == profession.Id).Select(p => p.PPIId).ToList());
             }
             List<PersonalProtectiveItem> personalProtectiveItems = new List<PersonalProtectiveItem>();
             foreach (List<int?> professions in ppiIdForProfessions)
@@ -115,13 +116,15 @@ namespace CalcOfQuantityPPI.Data
             List<List<ProfessionsInRequest>> professionsInRequest = new List<List<ProfessionsInRequest>>();
             foreach (Request r in requests)
             {
-                professionsInRequest.Add(_context.ProfessionsInRequest.Where(p => p.RequestId == r.Id).ToList());
+                professionsInRequest.Add(_context.ProfessionsInRequest
+                    .Where(p => p.RequestId == r.Id).ToList());
             }
             foreach (List<ProfessionsInRequest> profInReq in professionsInRequest)
             {
                 foreach (ProfessionsInRequest pInReq in profInReq)
                 {
-                    foreach (PPIInRequest ppi in _context.PPIInRequest.Where(p => p.ProfessionsInRequestId == pInReq.Id))
+                    foreach (PPIInRequest ppi in _context.PPIInRequest
+                        .Where(p => p.ProfessionsInRequestId == pInReq.Id))
                     {
                         if (ppi.PPIId == ppiId)
                         {
