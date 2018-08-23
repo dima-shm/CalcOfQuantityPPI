@@ -13,51 +13,49 @@
             <h2 style="color:white;">Учет потребности СИЗ</h2>
         </div>
     </div>
-    <h3>Выберите действие</h3>
-    <hr />
-    @if (User.Identity.IsAuthenticated)
-    {
-        if (User.IsInRole("admin"))
+    <br />
+    <fieldset>
+        <legend>Выберите действие</legend>
+        @if (User.Identity.IsAuthenticated)
         {
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
-                    @Html.ActionLink("Панель администратора", "Index", "Admin", null,
-                        new { @class = "btn btn-success btn-block", @style = "max-width:280px;" })
-                    <br />
-                    @Html.ActionLink("Поиск по наименованию СИЗ", "SearchByPPIName", "Search", null,
-                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
-                    <br />
-                    @Html.ActionLink("Поиск по наименованию подразделения", "SearchByDepartmentName", "Search", null,
-                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                    @if (User.IsInRole("admin"))
+                    {
+                        <center>
+                            @Html.ActionLink("Панель администратора", "Index", "Admin", null,
+                         new { @class = "btn btn-info btn-block", @style = "max-width:280px;" })
+                        </center>
+                        <br />
+                    }
+                    @if (User.IsInRole("structural-department-head") || User.IsInRole("admin"))
+                    {
+                        <fieldset>
+                            <legend>Расчет потребности СИЗ</legend>
+                            <center>
+                                @Html.ActionLink("По наименованию", "СalcByPPIName", "Сalc", null,
+                                 new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                <br />
+                                @Html.ActionLink("По подразделению", "СalcByDepartmentName", "Сalc", null,
+                         new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                            </center>
+                        </fieldset>
+                    }
+                    @if (User.IsInRole("department-head"))
+                    {
+                        <center>
+                            @Html.ActionLink("Оформить заявку", "CreateRequest", "Request", null,
+                         new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                        </center>
+                    }
                 </div>
             </div>
         }
-        else if (User.IsInRole("structural-department-head"))
+        else
         {
-            <div class="row">
-                <div class="col-md-4 col-md-offset-4">
-                    @Html.ActionLink("Поиск по наименованию СИЗ", "SearchByPPIName", "Search", null,
-                                new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
-                    <br />
-                    @Html.ActionLink("Поиск по наименованию подразделения", "SearchByDepartmentName", "Search", null,
-                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
-                </div>
+            <div class="row text-center">
+                <h2>Выполните  вход</h2>
             </div>
         }
-        else if (User.IsInRole("department-head"))
-        {
-            <div class="row">
-                <div class="col-md-4 col-md-offset-4">
-                    @Html.ActionLink("Оформить заявку", "CreateRequest", "Request", null,
-                        new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="row text-center">
-            <h2>Выполните  вход</h2>
-        </div>
-    }
+    </fieldset>
 </div>

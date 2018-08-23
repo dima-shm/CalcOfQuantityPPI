@@ -23,8 +23,8 @@ namespace CalcOfQuantityPPI.ViewModels.Account
 
         public string Role { get; set; }
 
-        public int ParentDepartmentId { get; set; }
+        public int StructuralDepartmentId { get; set; }
 
-        public int SubsidiaryDepartmentId { get; set; }
+        public int DepartmentId { get; set; }
     }
 }

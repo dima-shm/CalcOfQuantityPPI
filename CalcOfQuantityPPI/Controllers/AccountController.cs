@@ -230,24 +230,34 @@ namespace CalcOfQuantityPPI.Controllers
             return View("Error");
         }
 
+        #region PartialViews
+
+        [HttpGet]
+        public PartialViewResult DepartmentList(int id)
+        {
+            return PartialView(db.GetDepartments(id));
+        }
+
+        #endregion
+
         #region Helpers
 
         private void InitRolesAndDepartmentOnViewBag()
         {
             ViewBag.Roles = new SelectList(RoleManager.Roles, "Name", "Description");
-            ViewBag.ParentDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
-            ViewBag.SubsidiaryDepartments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name");
+            ViewBag.StructuralDepartments = new SelectList(db.GetDepartments(), "Id", "Name");
+            ViewBag.Departments = new SelectList(db.GetDepartments(db.GetDepartmentByParentId(null).Id), "Id", "Name");
         }
 
         private void initUserDepartmentIdByRole(User user, RegisterViewModel model)
         {
             if (model.Role == "structural-department-head")
             {
-                user.DepartmentId = model.ParentDepartmentId;
+                user.DepartmentId = model.StructuralDepartmentId;
             }
             else if (model.Role == "department-head")
             {
-                user.DepartmentId = model.SubsidiaryDepartmentId;
+                user.DepartmentId = model.DepartmentId;
             }
             else
             {

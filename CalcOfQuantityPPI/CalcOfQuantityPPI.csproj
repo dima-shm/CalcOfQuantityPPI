@@ -186,7 +186,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\RequestController.cs" />
     <Compile Include="Controllers\RolesController.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Controllers\СalcController.cs" />
     <Compile Include="Data\ApplicationContext.cs" />
     <Compile Include="Data\ApplicationRoleManager.cs" />
     <Compile Include="Data\ApplicationUserManager.cs" />
@@ -226,6 +226,8 @@
     <Compile Include="ViewModels\Roles\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\Roles\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\Account\ChangePasswordViewModel.cs" />
+    <Compile Include="ViewModels\Сalc\PPIViewModel.cs" />
+    <Compile Include="ViewModels\Сalc\CalcViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -268,8 +270,6 @@
     <Content Include="Views\Request\CreateRequest.cshtml" />
     <Content Include="Views\Request\RequestFailed.cshtml" />
     <Content Include="Views\Request\RequestSuccess.cshtml" />
-    <Content Include="Views\Search\SearchByDepartmentName.cshtml" />
-    <Content Include="Views\Search\SearchByPPIName.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
@@ -281,6 +281,9 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Request\ProfessionsAndPPITable.cshtml" />
+    <Content Include="Views\Сalc\СalcByDepartmentName.cshtml" />
+    <Content Include="Views\Сalc\СalcByPPIName.cshtml" />
+    <Content Include="Views\Account\DepartmentList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

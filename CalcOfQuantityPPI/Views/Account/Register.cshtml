@@ -27,15 +27,15 @@
                     @Html.DropDownListFor(model => model.Role, ViewBag.Roles as SelectList, 
                         new { id = "roles", @class = "form-control" })
                 </div>
-                <div id="parentDepartments" class="form-group">
+                <div id="structural-departments" class="form-group">
                     @Html.Label("Структурное подразделение:")<br />
-                    @Html.DropDownListFor(model => model.ParentDepartmentId, ViewBag.ParentDepartments as SelectList,
-                        new { id = "parentDepartment", @class = "form-control" })
+                    @Html.DropDownListFor(model => model.StructuralDepartmentId, ViewBag.StructuralDepartments as SelectList,
+                        new { id = "structural-department", @class = "form-control" })
                 </div>
-                <div id="subsidiaryDepartments" class="form-group">
+                <div id="departments" class="form-group">
                     @Html.Label("Подразделение")<br />
-                    @Html.DropDownListFor(model => model.SubsidiaryDepartmentId, ViewBag.SubsidiaryDepartments as SelectList, 
-                        new { id = "subsidiaryDepartment", @class = "form-control" })
+                    @Html.DropDownListFor(model => model.DepartmentId, ViewBag.Departments as SelectList, 
+                        new { id = "department", @class = "form-control" })
                 </div>
                 <div class="form-group">
                     @Html.Label("Логин")
@@ -64,35 +64,33 @@
     <script type="text/javascript">
         $(function () {
             $('#roles').val('admin');
-            $('#parentDepartments').hide(100);
-            $('#subsidiaryDepartments').hide(100);
+            $('#structural-departments').hide(100);
+            $('#departments').hide(100);
+            updateDepartmentList();
         });
         $('#roles').change(function () {
             updateRoleList(this.value);
         });
-        $('#parentDepartment').change(function () {
-            updateSubsidiaryDepartmentList();
-        });
-        $('#subsidiaryDepartment').change(function() {
-            updateProfessionsAndPPITable('#subsidiaryDepartment');
+        $('#structural-department').change(function () {
+            updateDepartmentList();
         });
         function updateRoleList(role) {
             if (role == "structural-department-head") {
-                $('#parentDepartments').show(100);
-                $('#subsidiaryDepartments').hide(100);
+                $('#structural-departments').show(100);
+                $('#departments').hide(100);
             } else if (role == "department-head") {
-                $('#parentDepartments').show(100);
-                $('#subsidiaryDepartments').show(100);
+                $('#structural-departments').show(100);
+                $('#departments').show(100);
             } else {
-                $('#parentDepartments').hide(100);
-                $('#subsidiaryDepartments').hide(100);
+                $('#structural-departments').hide(100);
+                $('#departments').hide(100);
             }
         }
-        function updateSubsidiaryDepartmentList() {
-            var parentDepartmentId = $('#parentDepartment').val();
+        function updateDepartmentList() {
+            var parentDepartmentId = $('#structural-department').val();
             $.ajax({
                 success: function () {
-                    $('#subsidiaryDepartment').load('@Url.Action("SubsidiaryDepartmentList", "Request")/' + parentDepartmentId);
+                    $('#department').load('@Url.Action("DepartmentList", "Account")/' + parentDepartmentId);
                 }
             });
         }
