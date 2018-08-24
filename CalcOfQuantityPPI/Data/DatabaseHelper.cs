@@ -106,6 +106,48 @@ namespace CalcOfQuantityPPI.Data
             return ppiViewModel;
         }
 
+        public List<PersonalProtectiveItem> GetPPIByDepartment(Department department)
+        {
+            List<Department> subsidiaryDepartments = GetDepartments(department.Id);
+            List<List<Profession>> professionsInDepartment = new List<List<Profession>>();
+            foreach (Department d in subsidiaryDepartments)
+            {
+                professionsInDepartment.Add(GetProfessionsById(d.Id));
+            }
+            List<PersonalProtectiveItem> personalProtectiveItems = new List<PersonalProtectiveItem>();
+            foreach (List<Profession> profession in professionsInDepartment)
+            {
+                foreach (Profession p in profession)
+                {
+                    foreach (PPIForProfession ppi in GetPPIForProfession(p.Id))
+                    {
+                        personalProtectiveItems.Add(_context.PersonalProtectiveItems.FirstOrDefault(pp => pp.Id == ppi.PPIId));
+                    }
+                }
+            }
+            return personalProtectiveItems.Distinct().ToList();
+        }
+
+        public List<DeparmentsViewModel> GetDeparmentsViewModelByDepartmentAndPPIId(Department department, int ppiId)
+        {
+            List<Department> subsidiaryDepartments = GetDepartments(department.Id);
+            List<List<Profession>> professionsInDepartment = new List<List<Profession>>();
+            foreach (Department d in subsidiaryDepartments)
+            {
+                professionsInDepartment.Add(GetProfessionsById(d.Id));
+            }
+            List<DeparmentsViewModel> deparmentsViewModel = new List<DeparmentsViewModel>();
+            foreach (Department d in subsidiaryDepartments)
+            {
+                deparmentsViewModel.Add(new DeparmentsViewModel
+                {
+                    DepartmentName = d.Name,
+                    QuantityOfPPI = GetTotalQuantityOfPPIForAYear(d.Id, ppiId)
+                });
+            }
+            return deparmentsViewModel;
+        }
+
         #region PrivateMethods
 
         private int GetTotalQuantityOfPPIForAYear(int departmentId, int ppiId)

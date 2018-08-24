@@ -221,13 +221,14 @@
     <Compile Include="ViewModels\Account\EditViewModel.cs" />
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\Calc\DeparmentsViewModel.cs" />
     <Compile Include="ViewModels\Request\ProfessionViewModel.cs" />
     <Compile Include="ViewModels\Request\RequestViewModel.cs" />
     <Compile Include="ViewModels\Roles\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\Roles\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\Account\ChangePasswordViewModel.cs" />
-    <Compile Include="ViewModels\Сalc\PPIViewModel.cs" />
-    <Compile Include="ViewModels\Сalc\CalcViewModel.cs" />
+    <Compile Include="ViewModels\Calc\PPIViewModel.cs" />
+    <Compile Include="ViewModels\Calc\CalcViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -281,11 +282,13 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Account\ChangePassword.cshtml" />
     <Content Include="Views\Request\ProfessionsAndPPITable.cshtml" />
-    <Content Include="Views\Сalc\СalcByDepartmentName.cshtml" />
-    <Content Include="Views\Сalc\СalcByPPIName.cshtml" />
+    <Content Include="Views\Calc\CalcByDepartmentName.cshtml" />
+    <Content Include="Views\Calc\CalcByPPIName.cshtml" />
     <Content Include="Views\Account\DepartmentList.cshtml" />
-    <Content Include="Views\Сalc\СalcByStructuralDepartmentName.cshtml" />
-    <Content Include="Views\Сalc\DepartmentList.cshtml" />
+    <Content Include="Views\Calc\CalcByStructuralDepartmentName.cshtml" />
+    <Content Include="Views\Calc\DepartmentList.cshtml" />
+    <Content Include="Views\Calc\CalcByPPINameAndStructuralDepartmentName.cshtml" />
+    <Content Include="Views\Calc\PPIList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

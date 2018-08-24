@@ -33,17 +33,20 @@
                         <fieldset>
                             <legend>Расчет потребности СИЗ</legend>
                             <center>
-                                @Html.ActionLink("По наименованию", "СalcByPPIName", "Сalc", null,
-                                    new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
-                                <br />
                                 @if (User.IsInRole("admin"))
                                 {
-                                    @Html.ActionLink("По подразделению", "СalcByStructuralDepartmentName", "Сalc", null,
+                                    @Html.ActionLink("По наименованию", "CalcByPPINameAndStructuralDepartmentName", "Calc", null,
+                                    new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                    <br />
+                                    @Html.ActionLink("По подразделению", "CalcByStructuralDepartmentName", "Calc", null,
                                         new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
                                 }
                                 else
                                 {
-                                    @Html.ActionLink("По подразделению", "СalcByDepartmentName", "Сalc", null,
+                                    @Html.ActionLink("По наименованию", "CalcByPPIName", "Calc", null,
+                                    new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
+                                    <br />
+                                    @Html.ActionLink("По подразделению", "CalcByDepartmentName", "Calc", null,
                                         new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
                                 }
                             </center>
