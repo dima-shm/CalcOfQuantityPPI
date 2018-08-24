@@ -4,6 +4,7 @@ using CalcOfQuantityPPI.ViewModels.Account;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -198,8 +199,17 @@ namespace CalcOfQuantityPPI.Controllers
                     var res = UserManager.Update(user);
                     if (res.Succeeded)
                     {
-                        AuthenticationManager.SignOut();
-                        return RedirectToAction("Index", "Admin");
+                        ViewBag.Message = "Пароль успешно изменен (" +  DateTime.Now.ToString() + ")";
+                        EditViewModel editModel = new EditViewModel
+                        {
+                            Id = user.Id,
+                            Name = user.Name,
+                            Login = user.Email,
+                            Role = RoleManager.FindByName(UserManager.GetRoles(user.Id).First()),
+                            Department = db.GetDepartment(user.DepartmentId),
+                            DatabaseHelper = db
+                        };
+                        return View("Edit", editModel);
                     }
                 }
                 return View("Error");
