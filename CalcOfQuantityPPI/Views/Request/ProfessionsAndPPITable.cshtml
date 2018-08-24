@@ -73,9 +73,9 @@
     });
     function calculateTotalQuantity() {
         $('.calc-table tr').each(function () {
-            var hours = $(this).find('input.quantity-of-employees').val();
-            var rate = $(this).find('input.quantity-of-ppi-for-one-employee').val();
-            $(this).find('input.total-quantity-of-ppi').val(hours * rate);
+            var quantityOfEmployees = $(this).find('input.quantity-of-employees').val();
+            var quantityOfPPI = $(this).find('input.quantity-of-ppi-for-one-employee').val();
+            $(this).find('input.total-quantity-of-ppi').val(quantityOfEmployees * quantityOfPPI);
         });
         return false;
     }

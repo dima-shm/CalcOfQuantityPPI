@@ -46,18 +46,22 @@
                                 <th>Количество</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="calc-table">
                             @for (int i = 0; i < Model.DeparmentsViewModel.Count; i++)
                             {
                                 <tr>
                                     <td>
                                         @Model.DeparmentsViewModel[i].DepartmentName
                                     </td>
-                                    <td>
+                                    <td class="quantity">
                                         @Model.DeparmentsViewModel[i].QuantityOfPPI
                                     </td>
                                 </tr>
                             }
+                            <tr>
+                                <td class="h3">Всего за год</td>
+                                <td class="total-quantity h3"></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -65,3 +69,22 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script>
+        $(function () {
+            calculateTotalQuantity();
+        });
+        function calculateTotalQuantity() {
+            $(document).ready(function () {
+                $(document).ready(function () {
+                    var sum = 0;
+                    $(".calc-table .quantity").each(function () {
+                        sum += parseInt($(this).text(), 10);
+                    });
+                    $('.calc-table .total-quantity').html(sum);
+                });
+            });
+        }
+    </script>
+}
