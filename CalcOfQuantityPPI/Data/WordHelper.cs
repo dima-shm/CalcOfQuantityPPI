@@ -1,7 +1,6 @@
 ﻿using Word = Microsoft.Office.Interop.Word;
 using System.Web;
 using CalcOfQuantityPPI.ViewModels.Request;
-using CalcOfQuantityPPI.Models;
 using System;
 using System.Collections.Generic;
 using CalcOfQuantityPPI.ViewModels.Calc;
@@ -11,6 +10,7 @@ namespace CalcOfQuantityPPI.Data
     public class WordHelper
     {
         private DatabaseHelper db;
+
         private string templateFileName = HttpContext.Current.Server.MapPath("~/App_Data/Template.docx");
 
         public WordHelper()
@@ -21,7 +21,7 @@ namespace CalcOfQuantityPPI.Data
         public void CreateFile(RequestViewModel model)
         {
             List<PPIViewModel> allPPIInDepartment = db.GetPPIViewModelByDepartment(db.GetDepartment(model.DepartmentId));
-            Word.Application wordApp = new Word.Application();       
+            Word.Application wordApp = new Word.Application();
             Word.Document wordDocument = new Word.Document();
             try
             {
@@ -99,14 +99,45 @@ namespace CalcOfQuantityPPI.Data
                     {
                         if (allPPIInDepartment[j].PPIName == requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].PersonalProtectiveItemName)
                         {
-                            table.Cell(i + 3, j + j + 4).Range.Text = 
+                            table.Cell(i + 3, j + j + 4).Range.Text =
                                 requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].QuantityForOneEmployee.ToString();
-                            table.Cell(i + 3, j + j + 5).Range.Text = 
+                            table.Cell(i + 3, j + j + 5).Range.Text =
                                 requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].TotalQuantity.ToString();
                         }
                     }
                 }
             }
+            CalcResult(table, requestViewModel, allPPIInDepartment);
+        }
+
+        private void CalcResult(Word.Table table, RequestViewModel requestViewModel, List<PPIViewModel> allPPIInDepartment)
+        {
+            AddResultRow(table, requestViewModel);
+            for (int j = 0; j < allPPIInDepartment.Count; j++)
+            {
+                int result = 0;
+                for (int i = 0; i < requestViewModel.ProfessionViewModelList.Count; i++)
+                {
+                    string val = table.Cell(i + 3, j + j + 5).Range.Text.Trim('\r', '\a');
+                    if (val != "")
+                    {
+                        result += Int32.Parse(val);
+                    }
+                }
+                table.Cell(requestViewModel.ProfessionViewModelList.Count + 3, j + j + 5).Range.Text = result.ToString();
+            }
+            MergeResultCells(table, requestViewModel);
+        }
+
+        private void AddResultRow(Word.Table table, RequestViewModel requestViewModel)
+        {
+            table.Rows.Add();
+            table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 1).Range.Text = "Итого на год:";
+        }
+
+        private void MergeResultCells(Word.Table table, RequestViewModel requestViewModel)
+        {
+            table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 1).Merge(table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 3));
         }
     }
 }
