@@ -45,6 +45,7 @@ namespace CalcOfQuantityPPI.Controllers
             if (!isEmptyPPIInModel(model))
             {
                 AddRequest(model);
+                new WordHelper().CreateFile(model);
                 return View("RequestSuccess");
             }
             else
@@ -61,6 +62,14 @@ namespace CalcOfQuantityPPI.Controllers
                 ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
             };
             return PartialView(model);
+        }
+
+        public FileResult GetFile()
+        {
+            string filePath = Server.MapPath("~/App_Data/Result.docx");
+            string fileType = "application/docx";
+            string fileName = "Заявка.docx";
+            return File(filePath, fileType, fileName);
         }
 
         #region Helpers
