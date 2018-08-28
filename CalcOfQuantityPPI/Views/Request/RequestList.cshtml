@@ -17,7 +17,7 @@
     </div>
     <br />
     <div class="panel panel-primary">
-        <div class="panel-heading">Заявки</div>
+        <div class="panel-heading">Заявки(@Model.Requests.Count)</div>
         <div class="panel-body">
             <div class="row">
                 <div class="col-md-12">
@@ -25,6 +25,7 @@
                         <thead>
                             <tr>
                                 <th>Идентификатор</th>
+                                <th>Структурное подразделение</th>
                                 <th>Подразделение</th>
                                 <th>Дата</th>
                                 <th></th>
@@ -35,8 +36,9 @@
                             {
                                 <tr>
                                     <td>@request.Id</td>
+                                    <td style="color:steelblue">@Model.DatabaseHelper.GetDepartment(Model.DatabaseHelper.GetDepartment(request.DepartmentId).ParentDepartmentId).Name</td>
                                     <td style="color:dodgerblue">@Model.DatabaseHelper.GetDepartment(@request.DepartmentId).Name</td>
-                                    <td style="color:steelblue">@request.Date</td>                            
+                                    <td style="color:steelblue">@request.Date</td>
                                     <td>
                                         @Html.ActionLink("Удалить", "RemoveRequest", "Request", new { id = @request.Id },
                                                  new { @class = "btn btn-sm btn-danger", @style = "max-width:280px;" })
