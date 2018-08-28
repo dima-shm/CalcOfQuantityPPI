@@ -4,6 +4,7 @@ using CalcOfQuantityPPI.ViewModels.Request;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using System;
+using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
 
@@ -62,6 +63,27 @@ namespace CalcOfQuantityPPI.Controllers
                 ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
             };
             return PartialView(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult RequestList()
+        {
+            RequestListViewModel model = new RequestListViewModel
+            {
+                Requests = db.GetRequests(),
+                DatabaseHelper = db
+            };
+            model.Requests.Sort((x, y) => y.Date.CompareTo(x.Date));
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "admin")]
+        public ActionResult RemoveRequest(int id)
+        {
+            db.RemoveRequest(id);
+            return View("RequestRemoveSuccess");
         }
 
         public FileResult GetFile()

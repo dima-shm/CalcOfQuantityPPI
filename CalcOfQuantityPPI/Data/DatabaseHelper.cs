@@ -148,6 +148,24 @@ namespace CalcOfQuantityPPI.Data
             return deparmentsViewModel;
         }
 
+        public List<Request> GetRequests()
+        {
+            return _context.Requests.ToList();
+        }
+
+        public void RemoveRequest(int id)
+        {
+            foreach (int professionsInRequestId in _context.ProfessionsInRequest.Where(p => p.RequestId == id).Select(p => p.Id).ToList())
+            {
+                _context.PPIInRequest.RemoveRange(_context.PPIInRequest.Where(ppi => ppi.ProfessionsInRequestId == professionsInRequestId).ToList());
+                _context.SaveChanges();
+            }        
+            _context.ProfessionsInRequest.RemoveRange(_context.ProfessionsInRequest.Where(p => p.RequestId == id).ToList());
+            _context.SaveChanges();
+            _context.Requests.Remove(_context.Requests.Find(id));
+            _context.SaveChanges();
+        }
+
         #region PrivateMethods
 
         private int GetTotalQuantityOfPPIForAYear(int departmentId, int ppiId)

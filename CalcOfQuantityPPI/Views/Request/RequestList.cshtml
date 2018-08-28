@@ -1,0 +1,52 @@
+﻿@using CalcOfQuantityPPI.Models
+@model CalcOfQuantityPPI.ViewModels.Request.RequestListViewModel
+@{
+    ViewBag.Title = "Список всех заявок";
+}
+
+<div class="container"
+     style="padding: 0 20px 20px 20px;
+     background-color: rgb(255,255,255);
+     box-shadow: rgba(0,0,0,0.5) 0 5px 20px;
+     border-radius:5px;
+     min-height:800px">
+    <div class="row" style="background-color:rgb(0, 140, 208); margin-left:-20px; margin-right:-20px; padding:10px;">
+        <div class="col-md-12">
+            <h2 style="color:white;">@ViewBag.Title</h2>
+        </div>
+    </div>
+    <br />
+    <div class="panel panel-primary">
+        <div class="panel-heading">Заявки</div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Идентификатор</th>
+                                <th>Подразделение</th>
+                                <th>Дата</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (Request request in Model.Requests)
+                            {
+                                <tr>
+                                    <td>@request.Id</td>
+                                    <td style="color:dodgerblue">@Model.DatabaseHelper.GetDepartment(@request.DepartmentId).Name</td>
+                                    <td style="color:steelblue">@request.Date</td>                            
+                                    <td>
+                                        @Html.ActionLink("Удалить", "RemoveRequest", "Request", new { id = @request.Id },
+                                                 new { @class = "btn btn-sm btn-danger", @style = "max-width:280px;" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
