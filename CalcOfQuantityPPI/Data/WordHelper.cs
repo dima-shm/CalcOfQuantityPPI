@@ -1,9 +1,9 @@
-﻿using Word = Microsoft.Office.Interop.Word;
-using System.Web;
+﻿using System.Web;
 using CalcOfQuantityPPI.ViewModels.Request;
 using System;
 using System.Collections.Generic;
 using CalcOfQuantityPPI.ViewModels.Calc;
+using Xceed.Words.NET;
 
 namespace CalcOfQuantityPPI.Data
 {
@@ -11,7 +11,9 @@ namespace CalcOfQuantityPPI.Data
     {
         private DatabaseHelper db;
 
-        private string templateFileName = HttpContext.Current.Server.MapPath("~/App_Data/Template.docx");
+        public const string Path = "~/App_Data/";
+
+        private string templateFileName = HttpContext.Current.Server.MapPath(Path + "Template.docx");
 
         public WordHelper()
         {
@@ -21,75 +23,67 @@ namespace CalcOfQuantityPPI.Data
         public void CreateFile(RequestViewModel model)
         {
             List<PPIViewModel> allPPIInDepartment = db.GetPPIViewModelByDepartment(db.GetDepartment(model.DepartmentId));
-            Word.Application wordApp = new Word.Application();
-            Word.Document wordDocument = new Word.Document();
-            try
+
+            DocX document = DocX.Load(templateFileName);
+            ReplaqceWords(document, model);
+            Table table = document.Tables[0];
+            AddColumns(table, allPPIInDepartment);
+            AddRows(table, model);
+            FillTable(table, model, allPPIInDepartment);
+            document.SaveAs(HttpContext.Current.Server.MapPath(Path + "Result.docx"));
+        }
+
+        private void ReplaqceWords(DocX document, RequestViewModel requestViewModel)
+        {
+            document.ReplaceText("{department}",
+                db.GetDepartment(requestViewModel.DepartmentId).Name);
+            document.ReplaceText("{year}",
+                DateTime.Now.Year.ToString());
+        }
+
+        private void AddColumns(Table table, List<PPIViewModel> allPPIInDepartment)
+        {
+            for (int i = 0; i < allPPIInDepartment.Count * 2; i++)
             {
-                wordApp.Visible = false;
-                wordDocument = wordApp.Documents.Open(templateFileName);
-                ReplaqceWords(wordDocument, model);
-                Word.Table table = wordDocument.Tables[2];
-                AddColumns(table, allPPIInDepartment);
-                AddRows(table, model);
-                FillTable(table, model, allPPIInDepartment);
-                wordDocument.SaveAs(HttpContext.Current.Server.MapPath("~/App_Data/Result.docx"));
+                table.InsertColumn();
             }
-            catch (Exception ex) { }
-            finally
+            MergeHeaderCells(table, allPPIInDepartment);
+        }
+
+        private void MergeHeaderCells(Table table, List<PPIViewModel> allPPIInDepartment)
+        {
+            for (int i = 0; i < allPPIInDepartment.Count; i++)
             {
-                wordDocument.Close();
-                wordApp.Quit();
+                table.Rows[0].MergeCells(i + 3, i + 4);
+                table.Rows[0].Cells[i + 3].InsertParagraph(allPPIInDepartment[i].PPIName);
             }
+            FillHeader(table, allPPIInDepartment);
         }
 
-        private void ReplaqceWords(Word.Document wordDocument, RequestViewModel requestViewModel)
+        private void FillHeader(Table table, List<PPIViewModel> allPPIInDepartment)
         {
-            ReplaqceWordStub("{department}", db.GetDepartment(requestViewModel.DepartmentId).Name, wordDocument);
-            ReplaqceWordStub("{year}", DateTime.Now.Year.ToString(), wordDocument);
-        }
-
-        private void ReplaqceWordStub(string stubToReplace, string text, Word.Document wordDocument)
-        {
-            var range = wordDocument.Content;
-            range.Find.ClearFormatting();
-            range.Find.Execute(FindText: stubToReplace, ReplaceWith: text);
-        }
-
-        private void AddColumns(Word.Table table, List<PPIViewModel> allPPIInDepartment)
-        {
-            for (int j = 0; j < allPPIInDepartment.Count; j++)
+            for (int i = 0; i < allPPIInDepartment.Count * 2; i++)
             {
-                table.Columns.Add();
-                table.Cell(1, j + 4).Range.Text = allPPIInDepartment[j].PPIName;
-            }
-            SplitColumns(table, allPPIInDepartment);
-        }
-
-        private void SplitColumns(Word.Table table, List<PPIViewModel> allPPIInDepartment)
-        {
-            for (int j = 0; j < allPPIInDepartment.Count * 2; j++)
-            {
-                table.Cell(2, j + 4).Range.Text = "Количество, всего";
-                if ((j % 2) == 0)
+                if ((i % 2) == 0)
                 {
-                    table.Cell(2, j + 4).Split(1, 2);
-                    table.Cell(2, j + 4).Range.Text = "Количество, на одного работника";
+                    table.Rows[1].Cells[i + 3].InsertParagraph("Количество, на одного работника");
+                    table.Rows[1].Cells[i + 4].InsertParagraph("Количество, всего");
                 }
             }
         }
 
-        private void AddRows(Word.Table table, RequestViewModel requestViewModel)
+        private void AddRows(Table table, RequestViewModel requestViewModel)
         {
             for (int i = 0; i < requestViewModel.ProfessionViewModelList.Count; i++)
             {
-                table.Rows.Add();
-                table.Cell(i + 3, 1).Range.Text = (i + 1).ToString();
-                table.Cell(i + 3, 2).Range.Text = requestViewModel.ProfessionViewModelList[i].ProfessionName;
-                table.Cell(i + 3, 3).Range.Text = requestViewModel.ProfessionViewModelList[i].EmployeesQuantity.ToString();
+                table.InsertRow();
+                table.Rows[i + 2].Cells[0].InsertParagraph((i + 1).ToString());
+                table.Rows[i + 2].Cells[1].InsertParagraph(requestViewModel.ProfessionViewModelList[i].ProfessionName);
+                table.Rows[i + 2].Cells[2].InsertParagraph(requestViewModel.ProfessionViewModelList[i].EmployeesQuantity.ToString());
             }
         }
 
-        private void FillTable(Word.Table table, RequestViewModel requestViewModel, List<PPIViewModel> allPPIInDepartment)
+        private void FillTable(Table table, RequestViewModel requestViewModel, List<PPIViewModel> allPPIInDepartment)
         {
             for (int i = 0; i < requestViewModel.ProfessionViewModelList.Count; i++)
             {
@@ -99,10 +93,10 @@ namespace CalcOfQuantityPPI.Data
                     {
                         if (allPPIInDepartment[j].PPIName == requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].PersonalProtectiveItemName)
                         {
-                            table.Cell(i + 3, j + j + 4).Range.Text =
-                                requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].QuantityForOneEmployee.ToString();
-                            table.Cell(i + 3, j + j + 5).Range.Text =
-                                requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].TotalQuantity.ToString();
+                            table.Rows[i + 2].Cells[j + j + 3]
+                                .InsertParagraph(requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].QuantityForOneEmployee.ToString());
+                            table.Rows[i + 2].Cells[j + j + 4]
+                               .InsertParagraph(requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].TotalQuantity.ToString());
                         }
                     }
                 }
@@ -110,7 +104,7 @@ namespace CalcOfQuantityPPI.Data
             CalcResult(table, requestViewModel, allPPIInDepartment);
         }
 
-        private void CalcResult(Word.Table table, RequestViewModel requestViewModel, List<PPIViewModel> allPPIInDepartment)
+        private void CalcResult(Table table, RequestViewModel requestViewModel, List<PPIViewModel> allPPIInDepartment)
         {
             AddResultRow(table, requestViewModel);
             for (int j = 0; j < allPPIInDepartment.Count; j++)
@@ -118,26 +112,32 @@ namespace CalcOfQuantityPPI.Data
                 int result = 0;
                 for (int i = 0; i < requestViewModel.ProfessionViewModelList.Count; i++)
                 {
-                    string val = table.Cell(i + 3, j + j + 5).Range.Text.Trim('\r', '\a');
-                    if (val != "")
+                    for (int k = 0; k < requestViewModel.ProfessionViewModelList[i].QuantityOfPPI.Length; k++)
                     {
-                        result += Int32.Parse(val);
+                        if (allPPIInDepartment[j].PPIName == requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].PersonalProtectiveItemName)
+                        {
+                            result +=
+                                requestViewModel.ProfessionViewModelList[i].QuantityOfPPI[k].TotalQuantity;
+                        }
                     }
                 }
-                table.Cell(requestViewModel.ProfessionViewModelList.Count + 3, j + j + 5).Range.Text = result.ToString();
+                table.Rows[requestViewModel.ProfessionViewModelList.Count + 2].Cells[j + j + 4]
+                    .InsertParagraph(result.ToString());
             }
             MergeResultCells(table, requestViewModel);
         }
 
-        private void AddResultRow(Word.Table table, RequestViewModel requestViewModel)
+        private void AddResultRow(Table table, RequestViewModel requestViewModel)
         {
-            table.Rows.Add();
-            table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 1).Range.Text = "Итого на год:";
+            table.InsertRow();
+            table.Rows[requestViewModel.ProfessionViewModelList.Count + 2].Cells[0]
+                .InsertParagraph("Итого на год:");
         }
 
-        private void MergeResultCells(Word.Table table, RequestViewModel requestViewModel)
+        private void MergeResultCells(Table table, RequestViewModel requestViewModel)
         {
-            table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 1).Merge(table.Cell(requestViewModel.ProfessionViewModelList.Count + 4, 3));
+            table.Rows[requestViewModel.ProfessionViewModelList.Count + 2]
+                .MergeCells(0, 2);
         }
     }
 }

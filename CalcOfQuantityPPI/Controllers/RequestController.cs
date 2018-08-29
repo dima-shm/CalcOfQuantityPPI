@@ -88,7 +88,7 @@ namespace CalcOfQuantityPPI.Controllers
 
         public FileResult GetFile()
         {
-            string filePath = Server.MapPath("~/App_Data/Result.docx");
+            string filePath = Server.MapPath(WordHelper.Path + "Result.docx");
             string fileType = "application/docx";
             string fileName = "Заявка.docx";
             return File(filePath, fileType, fileName);
