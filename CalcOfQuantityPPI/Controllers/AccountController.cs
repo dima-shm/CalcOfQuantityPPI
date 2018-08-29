@@ -146,7 +146,6 @@ namespace CalcOfQuantityPPI.Controllers
                 user.Name = model.Name;
                 user.Email = model.Login;
                 user.UserName = model.Login;
-                user.DepartmentId = model.Department.Id;
                 IdentityResult result = UserManager.Update(user);
                 if (result.Succeeded)
                 {
