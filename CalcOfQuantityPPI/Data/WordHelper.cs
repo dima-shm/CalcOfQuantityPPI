@@ -47,15 +47,20 @@ namespace CalcOfQuantityPPI.Data
             {
                 table.InsertColumn();
             }
-            MergeHeaderCells(table, allPPIInDepartment);
+            MergeAndFillHeaderCells(table, allPPIInDepartment);
         }
 
-        private void MergeHeaderCells(Table table, List<PPIViewModel> allPPIInDepartment)
+        private void MergeAndFillHeaderCells(Table table, List<PPIViewModel> allPPIInDepartment)
         {
             for (int i = 0; i < allPPIInDepartment.Count; i++)
             {
                 table.Rows[0].MergeCells(i + 3, i + 4);
                 table.Rows[0].Cells[i + 3].InsertParagraph(allPPIInDepartment[i].PPIName);
+                string protectionClass = db.GetPPIByName(allPPIInDepartment[i].PPIName).ProtectionClass;
+                if (protectionClass != null && protectionClass != "")
+                {
+                    table.Rows[0].Cells[i + 3].InsertParagraph(", " + db.GetPPIByName(allPPIInDepartment[i].PPIName).ProtectionClass);
+                }
             }
             FillHeader(table, allPPIInDepartment);
         }
