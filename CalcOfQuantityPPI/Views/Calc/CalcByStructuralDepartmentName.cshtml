@@ -62,10 +62,6 @@
                                     </td>
                                 </tr>
                             }
-                            <tr>
-                                <td class="h3">Всего за год</td>
-                                <td class="total-quantity h3"></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -73,39 +69,3 @@
         </div>
     </div>
 </div>
-
-@section scripts{
-    <script type="text/javascript">
-        $(function () {
-            updateDepartmentList();
-        });
-        $('#structural-department').change(function () {
-            updateDepartmentList();
-            $('#departments').show(100);
-        });
-        function updateDepartmentList() {
-            var structuralDepartmentId = $('#structural-department').val();
-            $.ajax({
-                success: function () {
-                    $('#department').load('@Url.Action("DepartmentList", "Calc")/' + structuralDepartmentId);
-                }
-            });
-        }
-    </script>
-    <script>
-        $(function () {
-            calculateTotalQuantity();
-        });
-        function calculateTotalQuantity() {
-            $(document).ready(function () {
-                $(document).ready(function () {
-                    var sum = 0;
-                    $(".calc-table .quantity").each(function () {
-                        sum += parseInt($(this).text(), 10);
-                    });
-                    $('.calc-table .total-quantity').html(sum);
-                });
-            });
-        }
-    </script>
-}
