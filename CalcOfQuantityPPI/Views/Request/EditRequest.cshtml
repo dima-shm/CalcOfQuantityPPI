@@ -1,0 +1,51 @@
+﻿@model CalcOfQuantityPPI.ViewModels.Request.EditRequestViewModel
+@{
+    ViewBag.Title = "Офромление заявки";
+}
+
+<div class="container"
+     style="padding: 0 20px 20px 20px;
+     background-color: rgb(255,255,255);
+     box-shadow: rgba(0,0,0,0.5) 0 5px 20px;
+     border-radius:5px;
+     min-height:800px">
+    <div class="row" style="background-color:rgb(0, 140, 208); margin-left:-20px; margin-right:-20px; padding:10px;">
+        <div class="col-md-12">
+            <h2 style="color:white;">Изменение заявки</h2>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <form asp-action="EditRequest" asp-controller="Request" method="post">
+            <div class="col-md-3">
+                <br />
+                @Html.Hidden("DepartmentId", @Model.DepartmentId, new { id = "parentDepartment" })
+                @Html.HiddenFor(model => model.RequestId, new { id = "request" })
+                <h2>@Model.DatabaseHelper.GetDepartment(Model.DepartmentId).Name</h2>
+                <br />
+                <button type="submit" class="btn btn-success btn-block">Сохранить</button>
+                <br />
+            </div>
+            <div class="col-md-9">
+                <table id="professionsTabel" style="width:100%"></table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            updateProfessionsAndPPITable('#request');
+        });
+
+        function updateProfessionsAndPPITable(id) {
+            var requestId = $(id).val();
+            $.ajax({
+                success: function () {
+                    $('#professionsTabel').load('@Url.Action("EditProfessionsAndPPITable", "Request")/' + requestId);
+                }
+            });
+        }
+    </script>
+}

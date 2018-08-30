@@ -1,4 +1,4 @@
-﻿@model CalcOfQuantityPPI.ViewModels.Request.RequestViewModel
+﻿@model CalcOfQuantityPPI.ViewModels.Request.EditRequestViewModel
 
 <div class="panel panel-primary">
     <table id="professionsTabel" class="table table-hover">
@@ -21,7 +21,7 @@
                     </td>
                     <td>
                         <center>
-                            @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", "",
+                            @Html.TextBox("ProfessionViewModelList[" + i + "].EmployeesQuantity", Model.ProfessionViewModelList[i].EmployeesQuantity,
                                 new { id = "employeesQuantity", type = "number", min = "0", max = "10000", @class = "form-control", style = "width:70px" })
                         </center>
                     </td>
@@ -37,13 +37,13 @@
                                         </td>
                                         <td>
                                             <center>
-                                                @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", null,
+                                                @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].QuantityForOneEmployee", Model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee,
                                                     new { type = "number", min = "0", max = "10000", @class = "form-control", style = "width:70px" })
                                             </center>
                                         </td>
                                         <td>
                                             <center>
-                                                @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", null,
+                                                @Html.TextBox("ProfessionViewModelList[" + i + "].QuantityOfPPI[" + j + "].TotalQuantity", Model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity,
                                                     new { type = "number", min = "0", max = "10000", @class = "form-control", style = "width:70px" })
                                             </center>
                                         </td>

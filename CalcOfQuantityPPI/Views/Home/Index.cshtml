@@ -55,6 +55,9 @@
                     @if (User.IsInRole("department-head"))
                     {
                         <center>
+                            @Html.ActionLink("Список всех заявок", "RequestList", "Request", null,
+                                new { @class = "btn btn-info btn-block", @style = "max-width:280px;" })
+                            <br />
                             @Html.ActionLink("Оформить заявку", "CreateRequest", "Request", null,
                                 new { @class = "btn btn-primary btn-block", @style = "max-width:280px;" })
                         </center>

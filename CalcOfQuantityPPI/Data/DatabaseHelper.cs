@@ -148,9 +148,16 @@ namespace CalcOfQuantityPPI.Data
             return deparmentsViewModel;
         }
 
-        public List<Request> GetRequests()
+        public List<Request> GetRequests(int? departmentId = null)
         {
-            return _context.Requests.ToList();
+            if (departmentId == null)
+            {
+                return _context.Requests.ToList();
+            }
+            else
+            {
+                return _context.Requests.Where(r => r.DepartmentId == departmentId).ToList();
+            }
         }
 
         public void RemoveRequest(int id)
@@ -159,11 +166,41 @@ namespace CalcOfQuantityPPI.Data
             {
                 _context.PPIInRequest.RemoveRange(_context.PPIInRequest.Where(ppi => ppi.ProfessionsInRequestId == professionsInRequestId).ToList());
                 _context.SaveChanges();
-            }        
+            }
             _context.ProfessionsInRequest.RemoveRange(_context.ProfessionsInRequest.Where(p => p.RequestId == id).ToList());
             _context.SaveChanges();
             _context.Requests.Remove(_context.Requests.Find(id));
             _context.SaveChanges();
+        }
+
+        public EditRequestViewModel GetEditRequestViewModel(int requestId)
+        {
+            EditRequestViewModel model = new EditRequestViewModel
+            {
+                RequestId = requestId,
+                DepartmentId = _context.Requests.Find(requestId).DepartmentId,
+                ProfessionViewModelList = GetProfessionViewModelListByRequestId(requestId),
+                DatabaseHelper = this
+            };
+            return model;
+        }
+
+        public void UpdateRequest(EditRequestViewModel model)
+        {
+            List<ProfessionsInRequest> professionsInRequest = _context.ProfessionsInRequest.Where(p => p.RequestId == model.RequestId).ToList();
+            List<PPIInRequest> ppi = new List<PPIInRequest>();
+            for (int i = 0; i < professionsInRequest.Count; i++)
+            {
+                _context.ProfessionsInRequest.Find(professionsInRequest[i].Id).EmployeesQuantity = model.ProfessionViewModelList[i].EmployeesQuantity;
+                var professionsInRequestId = professionsInRequest[i].Id;
+                ppi = _context.PPIInRequest.Where(p => p.ProfessionsInRequestId == professionsInRequestId).ToList();
+                for (int j = 0; j < ppi.Count; j++)
+                {
+                    _context.PPIInRequest.Find(ppi[j].Id).QuantityOfPPI = model.ProfessionViewModelList[i].QuantityOfPPI[j].QuantityForOneEmployee;
+                    _context.PPIInRequest.Find(ppi[j].Id).TotalQuantity = model.ProfessionViewModelList[i].QuantityOfPPI[j].TotalQuantity;
+                }
+                _context.SaveChanges();
+            }          
         }
 
         #region PrivateMethods
@@ -251,6 +288,59 @@ namespace CalcOfQuantityPPI.Data
             foreach (PersonalProtectiveItem ppi in ppiList)
             {
                 QuantityOfPPI.Add(new QuantityOfPPIViewModel { PersonalProtectiveItemName = ppi.Name });
+            }
+            return QuantityOfPPI.ToArray();
+        }
+
+        private List<ProfessionViewModel> GetProfessionViewModelListByRequestId(int? requestId)
+        {
+            int? departmentId = _context.Requests.Find(requestId).DepartmentId;
+            List<ProfessionViewModel> professionViewModelList = new List<ProfessionViewModel>();
+            List<PPIInRequest> ppi = new List<PPIInRequest>();
+            foreach (ProfessionsInRequest p in GetProfessionsInRequestByRequestId(requestId))
+            {
+                ppi = GetPPIByProfessionInRequestId(p.Id);
+                professionViewModelList.Add(new ProfessionViewModel
+                {
+                    ProfessionName = _context.Professions.Find(p.ProfessionId).Name,
+                    EmployeesQuantity = p.EmployeesQuantity,
+                    QuantityOfPPI = GetQuantityOfPPIViewModel(ppi)
+                });
+            }
+            return professionViewModelList;
+        }
+
+        private List<ProfessionsInRequest> GetProfessionsInRequestByRequestId(int? requestId)
+        {
+            return _context.ProfessionsInRequest.Where(p => p.RequestId == requestId).ToList();
+        }
+
+        private List<PPIInRequest> GetPPIByProfessionInRequestId(int? professionInRequestId)
+        {
+            List<PPIInRequest> ppiList = new List<PPIInRequest>();
+            foreach (PPIInRequest ppi in GetPPIForProfessionInRequest(professionInRequestId))
+            {
+                ppiList.Add(_context.PPIInRequest.Find(ppi.Id));
+            }
+            return ppiList;
+        }
+
+        private List<PPIInRequest> GetPPIForProfessionInRequest(int? professionInRequestId)
+        {
+            return _context.PPIInRequest.Where(p => p.ProfessionsInRequestId == professionInRequestId).ToList();
+        }
+
+        private QuantityOfPPIViewModel[] GetQuantityOfPPIViewModel(List<PPIInRequest> ppiList)
+        {
+            List<QuantityOfPPIViewModel> QuantityOfPPI = new List<QuantityOfPPIViewModel>();
+            foreach (PPIInRequest ppi in ppiList)
+            {
+                QuantityOfPPI.Add(new QuantityOfPPIViewModel
+                {
+                    PersonalProtectiveItemName = _context.PersonalProtectiveItems.Find(ppi.PPIId).Name,
+                    QuantityForOneEmployee = ppi.QuantityOfPPI,
+                    TotalQuantity = ppi.TotalQuantity
+                });
             }
             return QuantityOfPPI.ToArray();
         }

@@ -56,22 +56,12 @@ namespace CalcOfQuantityPPI.Controllers
         }
 
         [HttpGet]
-        public PartialViewResult ProfessionsAndPPITable(int id)
-        {
-            RequestViewModel model = new RequestViewModel
-            {
-                ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
-            };
-            return PartialView(model);
-        }
-
-        [HttpGet]
-        [Authorize(Roles = "admin")]
         public ActionResult RequestList()
         {
+            User user = UserManager.FindById(User.Identity.GetUserId());
             RequestListViewModel model = new RequestListViewModel
             {
-                Requests = db.GetRequests(),
+                Requests = db.GetRequests(user.DepartmentId != null ? user.DepartmentId : null),
                 DatabaseHelper = db
             };
             model.Requests.Sort((x, y) => y.Date.CompareTo(x.Date));
@@ -79,7 +69,21 @@ namespace CalcOfQuantityPPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin")]
+        public ActionResult EditRequest(int id)
+        {
+            EditRequestViewModel model = db.GetEditRequestViewModel(id);
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EditRequest(EditRequestViewModel model)
+        {
+            db.UpdateRequest(model);
+            model.DatabaseHelper = db;
+            return View(model);
+        }
+
+        [HttpGet]
         public ActionResult RemoveRequest(int id)
         {
             db.RemoveRequest(id);
@@ -94,6 +98,28 @@ namespace CalcOfQuantityPPI.Controllers
             return File(filePath, fileType, fileName);
         }
 
+        #region PartialViews
+
+        [HttpGet]
+        public PartialViewResult ProfessionsAndPPITable(int id)
+        {
+            RequestViewModel model = new RequestViewModel
+            {
+                ProfessionViewModelList = db.GetProfessionViewModelListByDepartmentId(id)
+            };
+            return PartialView(model);
+        }
+
+
+        [HttpGet]
+        public PartialViewResult EditProfessionsAndPPITable(int id)
+        {
+            EditRequestViewModel model = db.GetEditRequestViewModel(id);
+            return PartialView(model);
+        }
+
+        #endregion
+
         #region Helpers
 
         private bool isEmptyPPIInModel(RequestViewModel model)
@@ -107,7 +133,7 @@ namespace CalcOfQuantityPPI.Controllers
             foreach (ProfessionViewModel profession in model.ProfessionViewModelList)
                 if (profession.EmployeesQuantity != 0)
                     foreach (QuantityOfPPIViewModel quantityOfPPI in profession.QuantityOfPPI)
-                        if (quantityOfPPI.QuantityForOneEmployee != 0)
+                        if (quantityOfPPI.QuantityForOneEmployee != 0 && quantityOfPPI.TotalQuantity != 0)
                             count++;
             return count;
         }

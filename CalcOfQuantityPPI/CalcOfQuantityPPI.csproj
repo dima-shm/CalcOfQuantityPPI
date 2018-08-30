@@ -229,6 +229,7 @@
     <Compile Include="ViewModels\Calc\DeparmentsViewModel.cs" />
     <Compile Include="ViewModels\Request\ProfessionViewModel.cs" />
     <Compile Include="ViewModels\Request\RequestListViewModel.cs" />
+    <Compile Include="ViewModels\Request\EditRequestViewModel.cs" />
     <Compile Include="ViewModels\Request\RequestViewModel.cs" />
     <Compile Include="ViewModels\Roles\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\Roles\EditRoleViewModel.cs" />
@@ -297,6 +298,8 @@
     <Content Include="Views\Calc\PPIList.cshtml" />
     <Content Include="Views\Request\RequestList.cshtml" />
     <Content Include="Views\Request\RequestRemoveSuccess.cshtml" />
+    <Content Include="Views\Request\EditRequest.cshtml" />
+    <Content Include="Views\Request\EditProfessionsAndPPITable.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
