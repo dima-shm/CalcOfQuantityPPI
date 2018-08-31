@@ -24,19 +24,17 @@
             <form asp-action="CalcByDepartmentName" asp-controller="Calc" method="post">
                 <h3>Выберите подразделение</h3>
                 <div class="row">
-                    <div class="col-md-6 col-lg-offset-3">
-                        <div class="col-md-6">
-                            @Html.DropDownListFor(model => model.DepartmentId, ViewBag.StructuralDepartments as SelectList,
-                                new { id = "structural-department", @class = "form-control" })
-                            <br />
-                            @Html.CheckBox("isUseDepartment", new { id = "is-use-department" })
-                            @Html.Label("Подразделение")
-                            <br />
-                            @Html.DropDownList("department", ViewBag.Departments as SelectList,
-                                new { id = "department", @class = "form-control", style = "display:none" })
-                            <br />
-                            <button type="submit" class="btn btn-sm btn-success btn-block" style="max-width:280px">Готово</button>
-                        </div>
+                    <div class="col-md-6 col-lg-offset-4">
+                        @Html.DropDownListFor(model => model.DepartmentId, ViewBag.StructuralDepartments as SelectList,
+                            new { id = "structural-department", @class = "form-control" })
+                        <br />
+                        @Html.CheckBox("isUseDepartment", new { id = "is-use-department" })
+                        @Html.Label("Подразделение")
+                        <br />
+                        @Html.DropDownList("department", ViewBag.Departments as SelectList,
+                            new { id = "department", @class = "form-control", style = "display:none" })
+                        <br />
+                        <button type="submit" class="btn btn-sm btn-success btn-block" style="max-width:280px">Готово</button>
                     </div>
                 </div>
                 <hr />
