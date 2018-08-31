@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CalcOfQuantityPPI.Data.DatabaseHelper
+@{
     ViewBag.Title = "Главная";
 }
 
@@ -13,6 +14,12 @@
             <h2 style="color:white;">Учет потребности СИЗ</h2>
         </div>
     </div>
+    <br />
+    @if (!User.IsInRole("admin"))
+    {
+        <h1 style="text-align:right;">@Model.GetDepartmentNameByUserLogin(User.Identity.Name)</h1>
+    }
+    <h3 style="text-align:right;">@Model.GetUserByUserLogin(User.Identity.Name).Name</h3>
     <br />
     <fieldset>
         <legend>Выберите действие</legend>

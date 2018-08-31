@@ -11,6 +11,16 @@ namespace CalcOfQuantityPPI.Data
     {
         private ApplicationContext _context = new ApplicationContext();
 
+        public User GetUserByUserLogin(string userName)
+        {
+            return _context.Users.First(u => u.UserName == userName);
+        }
+
+        public string GetDepartmentNameByUserLogin(string userName)
+        {
+            return _context.Departments.Find(GetUserByUserLogin(userName).DepartmentId).Name;
+        }
+
         public List<Department> GetDepartments(int? parentDepartmentId = null)
         {
             return _context.Departments.Where(d => d.ParentDepartmentId == parentDepartmentId).ToList();
