@@ -13,6 +13,8 @@
     {
         public string PersonalProtectiveItemName { get; set; }
 
+        public string ProtectionClass { get; set; }
+
         public int QuantityForOneEmployee { get; set; }
 
         public int TotalQuantity { get; set; }

@@ -7,6 +7,7 @@
                 <th width="180">Профессия</th>
                 <th width="70">Численность сотрудников</th>
                 <th width="300"><center>Наименование средств индивидуальной защиты</center></th>
+                <th width="70">Класс защиты</th>
                 <th width="70">Количество на одного сотрудника</th>
                 <th width="90">Всего</th>
             </tr>
@@ -25,7 +26,7 @@
                                 new { id = "employeesQuantity", type = "number", min = "0", max = "10000", @class = "form-control", style = "width:70px" })
                         </center>
                     </td>
-                    <td colspan="3">
+                    <td colspan="4">
                         <table class="table table-hover">
                             <tbody>
                                 @for (int j = 0; j < Model.ProfessionViewModelList[i].QuantityOfPPI.Length; j++)
@@ -34,6 +35,10 @@
                                         <td width="300">
                                             @Html.HiddenFor(model => Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName)
                                             @Model.ProfessionViewModelList[i].QuantityOfPPI[j].PersonalProtectiveItemName
+                                        </td>
+                                        <td>
+                                            @Html.HiddenFor(model => Model.ProfessionViewModelList[i].QuantityOfPPI[j].ProtectionClass)
+                                            @Model.ProfessionViewModelList[i].QuantityOfPPI[j].ProtectionClass
                                         </td>
                                         <td>
                                             <center>

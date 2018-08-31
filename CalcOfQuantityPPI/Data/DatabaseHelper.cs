@@ -297,7 +297,7 @@ namespace CalcOfQuantityPPI.Data
             List<QuantityOfPPIViewModel> QuantityOfPPI = new List<QuantityOfPPIViewModel>();
             foreach (PersonalProtectiveItem ppi in ppiList)
             {
-                QuantityOfPPI.Add(new QuantityOfPPIViewModel { PersonalProtectiveItemName = ppi.Name });
+                QuantityOfPPI.Add(new QuantityOfPPIViewModel { PersonalProtectiveItemName = ppi.Name, ProtectionClass = ppi.ProtectionClass });
             }
             return QuantityOfPPI.ToArray();
         }
@@ -348,6 +348,7 @@ namespace CalcOfQuantityPPI.Data
                 QuantityOfPPI.Add(new QuantityOfPPIViewModel
                 {
                     PersonalProtectiveItemName = _context.PersonalProtectiveItems.Find(ppi.PPIId).Name,
+                    ProtectionClass = _context.PersonalProtectiveItems.Find(ppi.PPIId).ProtectionClass,
                     QuantityForOneEmployee = ppi.QuantityOfPPI,
                     TotalQuantity = ppi.TotalQuantity
                 });
