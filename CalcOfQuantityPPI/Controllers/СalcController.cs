@@ -30,6 +30,7 @@ namespace CalcOfQuantityPPI.Controllers
         public ActionResult CalcByDepartmentName()
         {
             User user = UserManager.FindById(User.Identity.GetUserId());
+            ViewBag.StructuralDepartments = new SelectList(db.GetDepartments().FindAll(d => d.Id == user.DepartmentId), "Id", "Name");
             ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Id", "Name");
             return View(new CalcViewModel
             {
@@ -40,16 +41,31 @@ namespace CalcOfQuantityPPI.Controllers
         }
 
         [HttpPost]
-        public ActionResult CalcByDepartmentName(CalcViewModel model)
+        public ActionResult CalcByDepartmentName(CalcViewModel model, bool isUseDepartment, int department)
         {
             User user = UserManager.FindById(User.Identity.GetUserId());
+            ViewBag.StructuralDepartments = new SelectList(db.GetDepartments().FindAll(d => d.Id == user.DepartmentId), "Id", "Name");
             ViewBag.Departments = new SelectList(db.GetDepartments(user.DepartmentId), "Id", "Name");
-            CalcViewModel resultModel = new CalcViewModel
+            CalcViewModel resultModel;
+            if (!isUseDepartment)
             {
-                StructuralDepartmentId = db.GetDepartment(user.DepartmentId).Id,
-                PPIViewModel = db.GetPPIViewModelByDepartment(db.GetDepartment(model.DepartmentId)),
-                DatabaseHelper = db
-            };
+                resultModel = new CalcViewModel
+                {
+                    StructuralDepartmentId = db.GetDepartment(user.DepartmentId).Id,
+                    PPIViewModel = db.GetPPIViewModelByStructuralDepartment(db.GetDepartment(model.DepartmentId)),
+                    DatabaseHelper = db
+                };
+            }
+            else
+            {
+                resultModel = new CalcViewModel
+                {
+                    StructuralDepartmentId = db.GetDepartment(user.DepartmentId).Id,
+                    DepartmentId = department,
+                    PPIViewModel = db.GetPPIViewModelByDepartment(db.GetDepartment(department)),
+                    DatabaseHelper = db
+                };
+            }     
             return View(resultModel);
         }
 

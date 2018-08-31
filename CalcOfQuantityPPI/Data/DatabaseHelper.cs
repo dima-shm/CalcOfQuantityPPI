@@ -1,6 +1,7 @@
 ﻿using CalcOfQuantityPPI.Models;
 using CalcOfQuantityPPI.ViewModels.Calc;
 using CalcOfQuantityPPI.ViewModels.Request;
+using Microsoft.Ajax.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,6 +113,48 @@ namespace CalcOfQuantityPPI.Data
                     PPIName = ppi.Name,
                     QuantityOfPPI = GetTotalQuantityOfPPIForAYear(department.Id, ppi.Id)
                 });
+            }
+            return ppiViewModel;
+        }
+
+        public List<PPIViewModel> GetPPIViewModelByStructuralDepartment(Department department)
+        {
+            List<Department> departments = GetDepartments(department.Id);
+            List<PPIViewModel> ppiViewModel = new List<PPIViewModel>();
+            foreach (Department d in departments)
+            {
+                List<Profession> professionsInDepartment = GetProfessionsById(d.Id);
+                List<List<int?>> ppiIdForProfessions = new List<List<int?>>();
+                foreach (Profession profession in professionsInDepartment)
+                {
+                    ppiIdForProfessions.Add(_context.PPIForProfession
+                        .Where(p => p.ProfessionId == profession.Id).Select(p => p.PPIId).ToList());
+                }
+                List<PersonalProtectiveItem> personalProtectiveItems = new List<PersonalProtectiveItem>();
+                foreach (List<int?> professions in ppiIdForProfessions)
+                {
+                    foreach (int ppiId in professions)
+                    {
+                        personalProtectiveItems.Add(_context.PersonalProtectiveItems.Find(ppiId));
+                    }
+                }
+                personalProtectiveItems = personalProtectiveItems.Distinct().ToList();
+                foreach (PersonalProtectiveItem ppi in personalProtectiveItems)
+                {
+                    PPIViewModel newPPI = new PPIViewModel
+                    {
+                        PPIName = ppi.Name,
+                        QuantityOfPPI = GetTotalQuantityOfPPIForAYear(d.Id, ppi.Id)
+                    };
+                    if (ppiViewModel.Find(p => p.PPIName == newPPI.PPIName) != null)
+                    {
+                        ppiViewModel.Find(p => p.PPIName == newPPI.PPIName).QuantityOfPPI += newPPI.QuantityOfPPI;
+                    }
+                    else
+                    {
+                        ppiViewModel.Add(newPPI);
+                    }
+                }
             }
             return ppiViewModel;
         }

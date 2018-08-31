@@ -26,11 +26,15 @@
                 <div class="row">
                     <div class="col-md-6 col-lg-offset-3">
                         <div class="col-md-6">
-                            @Html.DropDownListFor(model => model.DepartmentId, ViewBag.Departments as SelectList,
-                                new { @class = "form-control" })
+                            @Html.DropDownListFor(model => model.DepartmentId, ViewBag.StructuralDepartments as SelectList,
+                                new { id = "structural-department", @class = "form-control" })
                             <br />
-                        </div>
-                        <div class="col-md-6">
+                            @Html.CheckBox("isUseDepartment", new { id = "is-use-department" })
+                            @Html.Label("Подразделение")
+                            <br />
+                            @Html.DropDownList("department", ViewBag.Departments as SelectList,
+                                new { id = "department", @class = "form-control", style = "display:none" })
+                            <br />
                             <button type="submit" class="btn btn-sm btn-success btn-block" style="max-width:280px">Готово</button>
                         </div>
                     </div>
@@ -38,7 +42,14 @@
                 <hr />
             </form>
             <div class="panel panel-primary">
-                <div class="panel-heading">Результат расчета потртебности СИЗ для выбранного подразделения</div>
+                @if (@Model.DepartmentId == null)
+                {
+                    <div class="panel-heading">Результат расчета потртебности СИЗ для струкутрного подразделения @Model.DatabaseHelper.GetDepartment(Model.StructuralDepartmentId).Name</div>
+                }
+                else
+                {
+                    <div class="panel-heading">Результат расчета потртебности СИЗ для подразделения @Model.DatabaseHelper.GetDepartment(Model.DepartmentId).Name</div>
+                }
                 <div class="panel-body">
                     <table class="table table-hover">
                         <thead>
@@ -66,3 +77,54 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        $(function () {
+            $('#department').hide(0);
+            $('#is-use-department').prop('checked', false);
+            updateProfessionsAndPPITable('#structural-department');
+        });
+
+        $('#structural-department').change(function () {
+            $('#department').hide(100);
+            $('#is-use-department').prop('checked', false);
+        });
+
+        $('#department').change(function () {
+            updateProfessionsAndPPITable('#department');
+        });
+
+        $('#is-use-department').click(function () {
+            if ($('#is-use-department').is(':checked')) {
+                $('#department').show(100);
+                updateProfessionsAndPPITable('#department');
+            } else {
+                $('#department').hide(100);
+                updateProfessionsAndPPITable('#structural-department');
+            }
+        });
+
+        if ($('#is-use-department').is(':checked')) {
+            $('#department').show(100);
+            $('#department').change(function () {
+                updateProfessionsAndPPITable('#department');
+                });
+            } else {
+            $('#department').hide(100);
+            $('#structural-department').change(function () {
+                    updateProfessionsAndPPITable('#structural-department');
+                });
+        }
+
+        function updateProfessionsAndPPITable(id) {
+            var departmentId = $(id).val();
+            $.ajax({
+                success: function () {
+                    $('#professionsTabel').load('@Url.Action("ProfessionsAndPPITable", "Request")/' + departmentId);
+                }
+            });
+        }
+    </script>
+}

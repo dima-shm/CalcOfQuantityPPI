@@ -69,3 +69,23 @@
         </div>
     </div>
 </div>
+
+@section scripts{
+    <script type="text/javascript">
+        $(function () {
+            updateDepartmentList();
+        });
+        $('#structural-department').change(function () {
+            updateDepartmentList();
+            $('#departments').show(100);
+        });
+        function updateDepartmentList() {
+            var structuralDepartmentId = $('#structural-department').val();
+            $.ajax({
+                success: function () {
+                    $('#department').load('@Url.Action("DepartmentList", "Calc")/' + structuralDepartmentId);
+                }
+            });
+        }
+    </script>
+}

@@ -5,9 +5,9 @@ namespace CalcOfQuantityPPI.ViewModels.Calc
 {
     public class CalcViewModel
     {
-        public int StructuralDepartmentId { get; set; }
+        public int? StructuralDepartmentId { get; set; }
 
-        public int DepartmentId { get; set; }
+        public int? DepartmentId { get; set; }
 
         public int PPIId { get; set; }
 
